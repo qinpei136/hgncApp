@@ -1,0 +1,367 @@
+{
+	"pages": [
+		//pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path" : "pages/startup",
+			"style" : {
+				"navigationBarTitleText" : "启动页",
+				// app中不展示title标签
+				"app-plus": {  
+					"titleNView": false  
+				}
+			}
+		},
+		{
+			"path": "pages/index",
+			"style": {
+				"navigationBarTitleText": "首页",
+				// app中不展示title标签
+				"app-plus": {
+					"titleNView": false,
+					"bounce": "none", //关闭窗口回弹效果
+					"pullToRefresh": {
+						"support": true,
+						"style": "circle",
+						"color": "#4c9bfa"
+					}
+				}
+			}
+		},
+		{
+		    "path" : "pages/login/login",
+		    "style" : {
+		        "navigationBarTitleText" : "M+ 登录",
+				// app中不展示title标签
+				"app-plus": {  
+					"titleNView": false  
+				}
+			}
+		},
+		{
+			"path": "pages/login/pwd",
+			"style": {
+				"navigationBarTitleText": "忘记密码"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "M+",
+		"navigationBarBackgroundColor": "#242424"
+	},
+	
+	"subPackages": [{
+		// 首页
+		"root": "pages/home",
+		"pages": [
+// 			{
+// 			"path": "home_page",
+// 			"style": {
+// 				"navigationBarTitleText": "首页",
+// 				"app-plus": {
+// 					"titleNView": false
+// 				}
+// 			}
+// 		},
+		{
+			"path": "messages",
+			"style": {
+				"navigationBarTitleText": "我的通知"
+			}
+		}, {
+			"path": "search",
+			"style": {
+				"navigationBarTitleText": "搜索",
+				"app-plus": {
+					"titleNView": false
+				}
+			}
+		},{
+			"path": "subCategory_nav",
+			"style": {
+				"navigationBarTitleText": "商品分类导航",
+				"app-plus": {
+					"titleNView": false
+				}
+			}
+		},{
+			"path": "subCategory",
+			"style": {
+				"navigationBarTitleText": "商品分类",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},{
+			"path": "goods_detail",
+			"style": {
+				"navigationBarTitleText": "商品详情",
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent",
+						"buttons": [{
+								"type": "share"
+							}
+						]
+					}
+				}
+			}
+		}]
+	}, {
+		// 附近
+		"root": "pages/nearby",
+		"pages": [
+// 			{
+// 			"path": "nearby_page",
+// 			"style": {
+// 				"navigationBarTitleText": "附近",
+// 				"app-plus": {
+// 					"titleNView": false
+// 				}
+// 			}
+// 		},
+		{
+			"path": "shop_index",
+			"style": {
+				"navigationBarTitleText": "店铺首页",
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent",
+						"buttons": [{
+								"type": "share"
+							}
+						]
+					}
+				}
+				
+			}
+		},{
+			"path": "map",
+			"style": {
+				"navigationBarTitleText": "地图",
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
+			}
+		},{
+			"path": "order_list",
+			"style": {
+				"navigationBarTitleText": "我的订单"
+				
+			}
+		},{
+			"path": "order_detail",
+			"style": {
+				"navigationBarTitleText": "订单详情"
+				
+			}
+		},{
+			"path": "goods_detail",
+			"style": {
+				"navigationBarTitleText": "商品详情",
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent",
+						"buttons": [{
+								"type": "share"
+							}
+						]
+					}
+				}
+			}
+		},{
+			"path": "order_pay",
+			"style": {
+				"navigationBarTitleText": "提交订单",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},{
+			"path": "order_result",
+			"style": {
+				"navigationBarTitleText": "交易详情"
+			}
+		}]
+	}, {
+		// 会员中心
+		"root": "pages/vipCenter",
+		"pages": [
+// 			{
+// 			"path": "vipCenter_page",
+// 			"style": {
+// 				"navigationBarTitleText": "会员中心"
+// 			}
+// 		},
+		{
+			"path": "fund_management",
+			"style": {
+				"navigationBarTitleText": "资金管理"
+			}
+		},{
+			"path": "intergral_center",
+			"style": {
+				"navigationBarTitleText": "积分中心"
+			}
+		},{
+			"path": "intergral_transfer",
+			"style": {
+				"navigationBarTitleText": "积分转让"
+			}
+		},{
+			"path": "my_team",
+			"style": {
+				"navigationBarTitleText": "我的团队"
+			}
+		},{
+			"path": "performance_management",
+			"style": {
+				"navigationBarTitleText": "业绩管理"
+			}
+		},{
+			"path": "sales_management",
+			"style": {
+				"navigationBarTitleText": "销售管理"
+			}
+		},{
+			"path": "authentication",
+			"style": {
+				"navigationBarTitleText": "实名认证"
+			}
+		},{
+			"path": "bank_card",
+			"style": {
+				"navigationBarTitleText": "我的银行卡",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black",
+				"app-plus": {
+                    "bounce": "none", //关闭窗口回弹效果
+                    "titleNView": {
+                        "buttons": [ 
+                            {
+                                "text": "\u002B"
+                            }
+                        ]
+                    }
+                }
+			}
+		},{
+			"path": "add_card",
+			"style": {
+				"navigationBarTitleText": "添加银行卡",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},{
+			"path": "commissions_management",
+			"style": {
+				"navigationBarTitleText": "佣金管理",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},{
+			"path": "withdrawals_record",
+			"style": {
+				"navigationBarTitleText": "提现记录",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},{
+			"path": "withdrawals_record_detail",
+			"style": {
+				"navigationBarTitleText": "提现记录详情",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},{
+			"path": "store_management",
+			"style": {
+				"navigationBarTitleText": "店铺管理"
+			}
+		}]
+	}, {
+		// 购物车
+		"root": "pages/shopCart",
+		"pages": [
+// 			{
+// 			"path": "shopCart_page",
+// 			"style": {
+// 				"navigationBarTitleText": "购物车"
+// 			}
+// 		},
+		{
+			"path": "order_pay",
+			"style": {
+				"navigationBarTitleText": "提交订单",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},{
+			"path": "order_result",
+			"style": {
+				"navigationBarTitleText": "交易详情"
+			}
+		}]
+	}, {
+		// 我的
+		"root": "pages/mine",
+		"pages": [
+// 			{
+// 			"path": "mine_page",
+// 			"style": {
+// 				"navigationBarTitleText": "我的"
+// 			}
+// 		},
+		{
+			"path": "order_list",
+			"style": {
+				"navigationBarTitleText": "我的订单"
+			}
+		},{
+			"path": "order_detail",
+			"style": {
+				"navigationBarTitleText": "订单详情"
+			}
+		},{
+			"path": "account_info",
+			"style": {
+				"navigationBarTitleText": "账号信息"
+			}
+		},{
+			"path": "gesture_lock",
+			"style": {
+				"navigationBarTitleText": "二级密码管理"
+			}
+		},{
+			"path": "change_telphone",
+			"style": {
+				"navigationBarTitleText": "换绑手机"
+			}
+		},{
+			"path": "address_management",
+			"style": {
+				"navigationBarTitleText": "地址管理"
+			}
+		},{
+			"path": "address_edit",
+			"style": {
+				"navigationBarTitleText": "地址编辑"
+			}
+		}]
+	}],
+	"condition" : { //模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": [
+			{
+				"name": "swiper", //模式名称
+				"path": "pages/index", //启动页面，必选
+				"query": "" //启动参数，在页面的onLoad函数里面得到
+			},
+			{
+				"name": "goodsdetail", //模式名称
+				"path": "pages/home/goods_detail", //启动页面，必选
+				"query": "" //启动参数，在页面的onLoad函数里面得到
+			}
+		]
+	}
+}

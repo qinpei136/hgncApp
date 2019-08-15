@@ -1,0 +1,26 @@
+{
+  "name": "Pengyu",
+  "version": "1.0.0",
+  "description": "使用`uni-app`开发的一个app，[文档](https://uniapp.dcloud.io/)<br>",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hgnc-team/hgncApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hgnc-team/hgncApp/issues"
+  },
+  "homepage": "https://github.com/hgnc-team/hgncApp#readme",
+  "dependencies": {
+    "@dcloudio/uni-ui": "0.0.4",
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0",
+    "mpvue-picker": "^2.0.5"
+  }
+}
