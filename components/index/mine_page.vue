@@ -8,7 +8,7 @@
 			</view>
 			<view class="info uni-flex-item uni-flex uni-column" v-if="hasLogin">
 				<view class="username">{{userinfo.userName}}</view>
-				<view class="integral">ID: {{userinfo.inviteCode}}</view>
+				<view class="integral">ID: {{userinfo.id}}</view>
 			</view>
 			<view class="setting uni-inline-item">
 				<uni-icon type="arrowright" size="20"></uni-icon>
@@ -141,7 +141,7 @@
 				this.userinfo = {
 					face: '/static/HM-PersonalCenter/face_default.png',
 					userName: this.$store.state.userName,
-					inviteCode: this.$store.state.userInviteCode
+					id: this.$store.id
 				}
 			},
 			login() {

@@ -42,12 +42,12 @@
 				// 用户角色等级
 				const userLevel = userInfo.role || 0;
 				const userId = userInfo.id;
-				// 获取购物车数据
+				/* // 获取购物车数据
 				this.getCartList(userId);
 				// 获取收货地址
 				this.getAddress(userId);
 				// 获取订单列表数据
-				this.getOrderList(userId);
+				this.getOrderList(userId); */
 				// 设置底部导航栏
 				this.setfooterBar(userLevel);
 				// 缓存用户信息

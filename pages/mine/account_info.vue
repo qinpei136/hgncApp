@@ -9,13 +9,6 @@
 		<view class="bottom-btn" @tap="logout">
 			<button type="primary">退出当前账号</button>
 		</view>
-		
-		<!-- 模态框 修改昵称-->
-		<neil-modal :show="showModal" @close="closeModal()" @confirm="changeNickName" title="修改昵称">
-		    <view class="input-wrap">	
-		    	<input type="text" v-model="nickName" placeholder="请输入昵称" class="nick-name" />
-		    </view>
-		</neil-modal>
 	</view>
 </template>
 
@@ -23,7 +16,7 @@
 	import neilModal from '../../components/neil-modal/neil-modal.vue';
 	import myList from "../../components/common/my-list";
 	import { mapMutations } from 'vuex';
-	import service from "../../common/service.js";
+	import service from "../../common/userService.js";
 	export default {
 		components: {
 			myList,
@@ -36,24 +29,14 @@
 				},
 				showModal: false,
 				nickName: '',
-				pageList1: [{
-						type: "face",
-						title: '头像',
-						iconfont: 'iconchracter',
-						extra: {},
-						isShowExtra: false,
-						isShowArrow: true
-					},
+				pageList1: [
 					{
 						type: "nikeName",
-						title: '昵称',
+						title: '用户名',
 						iconfont: 'iconicon_mine_nor',
-						extra: {
-							text: "昵称",
-							color: "#999"
-						},
+						extra: {},
 						isShowExtra: true,
-						isShowArrow: true
+						isShowArrow: false
 					},
 					{
 						type: "id",
@@ -104,18 +87,15 @@
 		methods: {
 			init() {
 				// 缓存用户token
-				let token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZSI6IjE1NjUyNTgxMTg4IiwidXNlcmlkIjoiMjkzYTg1OTgtNzM5Yi00NjUzLTllNzMtZWI4NjlmMmI2YmRiIiwidXNlcm5hbWUiOiLnp6bkvakiLCJuYmYiOjE1NjU4NTQzODksImV4cCI6MTU2NTg2MDM4OSwiaWF0IjoxNTY1ODU0Mzg5LCJpc3MiOiJpc3N1ZXIiLCJhdWQiOiJBdWRpZW5jZSJ9.7AdDAYFi8GKuWBRoiMPTn8pj1iqb8qcT_9vnsMnq84M"
-				let data={"id":"293a8598-739b-4653-9e73-eb869f2b6bdb","userName":"秦佩","pwd":"F3412D31BF5D660E","secondaryPwd":null,"phone":"15652581188","role":0,"parentCode":"14fcfa90-5b8c-44a3-b6fc-57fc3bc22ff8","mentorCode":"NULL                                ","topCode":"8a8b7f5c-0023-4b17-9fdb-01023f75f038","createTime":"2019-08-15T14:44:37.843","timeLine":null,"comPoint":0,"gold":0,"dumpRate":0,"alive":true,"dumpPointFlag":true,"cost":0,"remain":0,"storeOwner":false,"tShops":null,"tAddress":[],"tCart":[],"tOrder":[],"tShopCart":[],"tShopOrder":[]}
-				uni.setStorageSync("USER_TOKEN", token);
-				uni.setStorageSync('USERS_INFO', data);
 				let userinfo = uni.getStorageSync('USERS_INFO')
 				if(userinfo) {
-					// 初始化头像
 					// 初始化昵称
-					this.pageList1[1].extra.text = userinfo.userName;
+					this.pageList1[0].extra.text = userinfo.userName;
 					this.nickName = userinfo.userName;
 					// 初始化id
-					this.pageList1[2].extra.text = userinfo.inviteCode;
+					this.pageList1[1].extra.text = userinfo.tuser.id;
+					//初始化累计消费
+					this.pageList2[1].extra.text = userinfo.sales;
 				}
 			},
 			// 关闭modal
@@ -128,17 +108,9 @@
 				this.pageList1[1].extra.text = this.nickName;
 			},
 			// 点击跳转
-			handleClick(data) {
-				// 更换头像
-				if (data.item.type === "face") {
-					uni.showToast({
-						title:"更换头像"
-					})
-					// 修改昵称
-				} else if (data.item.type === "nikeName") {
-					this.showModal = true;
-					// 管理密码
-				} else if (data.item.type === "password") {
+			handleClick(data) { 
+				// 管理密码
+				if (data.item.type === "password") {
 					uni.navigateTo({
 						url: "/pages/mine/gesture_lock?mode=set"
 					})
@@ -159,7 +131,11 @@
 							uni.showLoading({
 								title: "退出中..."
 							});
-							service.logout().then(res=>{
+				let token = uni.getStorageSync('USER_TOKEN')
+				const parms = {
+					token: token
+				};
+							service.logout(parms).then(res=>{
 								uni.hideLoading();
 								this.$store.commit('LOGOUT');
 								uni.reLaunch({

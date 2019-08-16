@@ -264,7 +264,7 @@
 					// 设置底部导航栏
 					this.setfooterBar(userLevel); */
 					// 缓存用户信息
-					data.userName = data.userName ? data.userName : 'PY_' + data.phone;
+					data.userName = data.tuser.userName ? data.tuser.userName : 'PY_' + data.tuser.phone;
 					uni.setStorageSync('USERS_INFO', data);
 					// 同步store里面的用户名称，等级
 					this.LOGIN(data);

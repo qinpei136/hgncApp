@@ -42,7 +42,7 @@ const register = function(params) {
 		phone: params.phone,
 		parentCode: params.inviteCode,
 	}
-	return vm.$http.post('/api/TUsers/PostTUser', data)
+	return vm.$http.post('/api/TUsers/PostTUser/'+params.code, data)
 }
 
 /**     
@@ -64,16 +64,28 @@ const login = function(userInfo) {
   * @method 忘记密码（重新设置密码）   
   * @param {String} phoneNum  手机号  
   * @param {String} pwd  密码
-  * @param {String} authCode  验证码
+  * @param {String} code  验证码
   * @return {promise} 返回一个promise对象     
   **/
 const reSetPwd = function(params) {
 	let data = {
-		phoneNum: params.phone,
-		pwd: params.password,
-		authCode: params.code,
+		phone: params.phone,
+		pwd: params.password
 	}
-	return vm.$http.post('/api/TUsers/BackPwd/', data)
+	return vm.$http.put('/api/TUsers/BackPwd/'+params.code, data)
+}
+
+/**     
+  * @method 登录   
+  * @param {String} phoneNum  手机号  
+  * @param {String} pwd  密码
+  * @return {promise} 返回一个promise对象   
+  */
+const logout = function(params) {
+	let data = {
+		token: params.token
+	}
+	return vm.$http.post('/api/TUsers/InvalidateToken', data)
 }
 
 const LOGIN_MODULE = {
@@ -81,8 +93,8 @@ const LOGIN_MODULE = {
 	register,
 	login,
 	reSetPwd,
+	logout,
 	// getConfigs,
-	// logout,
 	// changeBindPhone,
 	// refleshToken
 }

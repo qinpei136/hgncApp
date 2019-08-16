@@ -28,7 +28,7 @@
 
 <script>
 	import _  from 'lodash';
-	import service from '../../common/service.js';
+	import service from '../../common/userService.js';
 	import util from '../../common/util.js';
 	export default {
 		data() {
@@ -159,7 +159,7 @@
 							{
 								checkType: "notnull",
 								name: "password",
-								errorMsg: "请输入密码"
+								errorMsg: "请输入新密码"
 							}
 						]
 					},{
@@ -198,7 +198,7 @@
 				// 请求重置密码接口
 				const parms = {
 					phone: this.pwdData.phone,
-					password: _.trim(this.pwdData.password),
+					pwd: _.trim(this.pwdData.password),
 					code: this.pwdData.code,
 				}
 				uni.showLoading({title: '重置中'});
@@ -220,7 +220,7 @@
 						// 登录失败
 						uni.showToast({
 							icon: 'none',
-							title: res.data.errmsg,
+							title: res.data.msg,
 						});
 						return;
 					}
