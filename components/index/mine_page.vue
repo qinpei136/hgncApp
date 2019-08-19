@@ -91,13 +91,7 @@
 				userinfo: {},
 				version: "",
 				// 跳转其他功能页面列表
-				pageList: [{
-						title: '换绑手机',
-						iconfont: 'iconshouji',
-						extra: {},
-						isShowExtra: false,
-						isShowArrow: true,
-					},
+				pageList: [
 					{
 						title: '收货地址',
 						iconfont: 'iconaddress',
@@ -141,7 +135,7 @@
 				this.userinfo = {
 					face: '/static/HM-PersonalCenter/face_default.png',
 					userName: this.$store.state.userName,
-					id: this.$store.id
+					id: this.$store.state.userId
 				}
 			},
 			login() {
@@ -165,18 +159,12 @@
 
 			// 点击跳转
 			handleClick(data) {
-				// 换绑手机
 				if (data.index === 0) {
-					uni.navigateTo({
-						url: "/pages/mine/change_telphone"
-					})
-					// 收货地址
-				} else if (data.index === 1) {
 					uni.navigateTo({
 						url: "/pages/mine/address_management"
 					})
 					// 管理密码
-				} else if (data.index === 2) {
+				} else if (data.index === 1) {
 					uni.navigateTo({
 						url: "/pages/mine/gesture_lock?mode=set"
 					})

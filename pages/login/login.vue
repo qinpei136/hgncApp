@@ -208,11 +208,11 @@
 						checkType: "notnull",
 						name: "phone",
 						errorMsg: "请输入手机号"
-					}, {
+					}/* , {
 						checkType: "phoneno",
 						name: "phone",
 						errorMsg: "请输入正确的手机号"
-					}]
+					} */]
 				}, {
 					name: "password",
 					rules: [{

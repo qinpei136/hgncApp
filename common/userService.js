@@ -76,7 +76,7 @@ const reSetPwd = function(params) {
 }
 
 /**     
-  * @method 登录   
+  * @method 退出登录   
   * @param {String} phoneNum  手机号  
   * @param {String} pwd  密码
   * @return {promise} 返回一个promise对象   
@@ -106,21 +106,13 @@ const setSecondaryPwd = function(params) {
 /**     
   * @method 获取订单列表  
   * @param {String} userId  用户id 
-  * @param {String} status 不传时查询所有订单，
-  * 				"0"为待付款，
-					"1"为已付款待发货，
-					"2"为已发货待收货，
-					"d"为确认收货已完成(done)交易成功状态
-					"c"为未付款订单已取消(cancel)状态,
-					"n"为已付款订单取消未退款状态
-					"a"为已付款订单取消已退款状态
-					其中流程已结束的订单状态为 d,c,a
+  * @param {String} status 0为未付款，1为已付款，c为未付款已取消(cancel)状态,d为确认收货已完成(done)状态
   * @param {Number} page 
   * @param {Number} pageSize 
   **/
 const getOrderList = function(params) {
-	let userinfo = uni.getStorageSync('USERS_INFO')
-	return vm.$http.get('/api/TOrders/GetTOrder_user/'+userinfo.tuser.id)
+	let url=vm.$store.state.userId+"?pageIndex="+params.page+"&pageSize="+params.pageSize+"&status="+params.status
+	return vm.$http.get('/api/TOrders/GetTOrder_user/'+url)
 }
 
 const LOGIN_MODULE = {

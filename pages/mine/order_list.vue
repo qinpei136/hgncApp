@@ -17,9 +17,9 @@
 						<view class="iconfont icondianpu uni-inline-item">
 
 						</view>
-						<view class="title uni-h5 uni-flex-item">
+						<view class="title uni-inline-item">
 							<view class="">
-								{{item.detail}}
+								{{item.orderId}}
 							</view>
 						</view>
 						<view class="status uni-inline-item">
@@ -38,8 +38,8 @@
 								</view>
 							</view>
 							<view class="code uni-text-small text-color-gray uni-column uni-flex">
-								<text>订单编号: {{item.orderNum}}</text>
-								<text>订单时间: {{item.orderTime}}</text>
+								<!-- <text>订单编号: {{item.orderId}}</text> -->
+								<text>订单时间: {{item.ordersTime}}</text>
 								<text style="line-height:1.4">送货地址: {{item.address}}</text>
 							</view>
 						</view>
@@ -84,7 +84,7 @@
 				tabs: {
 					// 选项卡
 					items: ['全部', '待付款', '待发货', '待收货', '已完成'],
-					current: 0,
+					current: "a",
 				},
 				orderList: [],
 				// 状态查询字段
@@ -117,28 +117,38 @@
 				}
 				uni.showLoading();
 				service.getOrderList(params).then(res => {
-					uni.hideLoading();
-					let data = res.data.data.data;
-					if (data.length > 0) {
-						_.forEach(data, item => {
-							// // 拼接图片链接
-							item.imageUrl = util.setImageUrl({
-								type: "goods",
-								goodId: item.goodsId,
-								imageName: item.imageUrl
-							})[0].img
-							// 转换订单状态
-							item.statusText = this.traslateStatus(item.status, "TO-TEXT");
-							// 待收获状态，有确认收货按钮（一键结束流程）
-							item.hasReceiptBtn = status === 2 ? true : false;
-						})
-						this.orderList = this.orderList.concat(data);
+						uni.hideLoading();
+					if(res.data.code=="200")
+					{
+						let data = res.data.result;
+						if (data.length > 0) {
+							_.forEach(data, item => {
+								// // 拼接图片链接
+								item.imageUrl = util.getImageUrl(item.img)
+								// 转换订单状态
+								item.statusText = this.traslateStatus(item.status, "TO-TEXT");
+								// 待收获状态，有确认收货按钮（一键结束流程）
+								item.hasReceiptBtn = status === 2 ? true : false;
+							})
+							this.orderList = this.orderList.concat(data);
+						}
 					}
+					else
+					{
+						if(res.data.code!="204")
+						{
+							uni.showToast({
+								icon: "none",
+								title: res.data.msg
+							})
+						}
+					}
+					
 				}).catch(err => {
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
-						title: err.errMsg
+						title: err.message
 					})
 				})
 			},
@@ -211,7 +221,7 @@
 					switch (value) {
 						case 0:
 							// 全部
-							tValue = "";
+							tValue = "a";
 							break;
 						case 1:
 							// 待付款
@@ -234,6 +244,9 @@
 					}
 				} else {
 					switch (value) {
+						case "a":
+							tValue = "全部";
+							break;
 						case "0":
 							tValue = "待付款";
 							break;
@@ -246,15 +259,15 @@
 						case "d":
 							tValue = "已完成";
 							break;
-						case "c":
-							tValue = "已取消";
-							break;
-						case "n":
-							tValue = "退款中";
-							break;
-						case "a":
-							tValue = "已退款";
-							break;
+						// case "c":
+						// 	tValue = "已取消";
+						// 	break;
+						// case "n":
+						// 	tValue = "退款中";
+						// 	break;
+						// case "a":
+						// 	tValue = "已退款";
+						// 	break;
 						default:
 							break;
 					}
@@ -331,7 +344,8 @@
 					border-bottom: 1upx solid #f0f0f0;
 
 					.title {
-						line-height: 74upx;
+						// line-height: 74upx;
+						width: 600upx;
 					}
 
 					.status {

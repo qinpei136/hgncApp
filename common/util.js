@@ -1,6 +1,7 @@
 const BASE_IMAGE_URL = 'https://images.maiyidesan.cn/'
 const BASE_IMAGE_URL_NO_SLASH = 'https://images.maiyidesan.cn'
 const BASE_URL = 'http://server.maiyidesan.cn/v1/api/'
+const domainImg="https://yymall.maiyidesan.cn/YYSYS"
 /**  
  * @Title: util.js    
  * @Description: 公共工具汇总   
@@ -258,6 +259,14 @@ const setImageUrl = function(params) {
 	}
 }
 
+/**
+ * @method  获取图片完整地址
+ * @param {String} img 图片地址
+ **/
+const getImageUrl = function(img) {
+	return domainImg+img
+}
+
 /**     
  * @method 设置下拉刷新模式
  * @param {Boolean} isSupport 是否开启
@@ -353,5 +362,6 @@ export default {
 	setImageUrl,
 	setRefreshMode,
 	BASE_IMAGE_URL,
-	calc
+	calc,
+	getImageUrl
 }

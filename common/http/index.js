@@ -26,7 +26,7 @@ function refleshToken(config) {
 		method: 'post',
 		header: {
             "Content-Type": "application/json",
-			'Authorization': config.header['Authorization']
+			'Auth': config.header['Authorization']
 		}
 	})
 }
@@ -39,7 +39,7 @@ function checkTokenStatus(response) {
 	// ER	token invalid	（token解码失败）请勿伪造token
 	// RF	token timeout	需要更换token
 	// OE	not latest token;token timeout	（非最新签发的token且超时）重定向到登录页面
-	const code = response.data.data.acode;
+	const code = response.data;
 	if (code === "00" || code === "RF") {
 		// 消息重发，换上新的token
 		reloadMessage(response.config)
@@ -155,7 +155,7 @@ function _reslog(res) {
 
 export default {
 	config: {
-		 baseUrl: "https://yymall.maiyidesan.cn",
+		baseUrl: "https://yymall.maiyidesan.cn",
 		header: {
 			'Content-Type': 'application/json;charset=UTF-8',
 			// 'Content-Type':'application/x-www-form-urlencoded'
@@ -186,7 +186,7 @@ export default {
 
 		//TODO 数据签名
 		let _token = {
-			'Authorization': uni.getStorageSync('USER_TOKEN') || 'undefined'
+			'Auth': uni.getStorageSync('USER_TOKEN') || 'undefined'
 		};
 		options.header = Object.assign({}, options.header, _token)
 

@@ -43,14 +43,15 @@ const store = new Vuex.Store({
 	},
 	mutations: {
 		// 登录动作
+		
 		LOGIN(state, data) {
 		    state.userName = data.userName || 'PY_'+ data.phone;
-			state.userLevel = data.role;
-			state.userId = data.id;
-			state.userFace = data.face || '/static/HM-PersonalCenter/face_default.png';
-			state.userPhone = data.phone;
-			state.userInviteCode = data.inviteCode;
-			state.secondaryPwd = data.secondaryPwd;
+			state.userLevel = data.tuser.role;
+			state.userId = data.tuser.id;
+			state.userFace = data.tuser.face || '/static/HM-PersonalCenter/face_default.png';
+			state.userPhone = data.tuser.phone;
+			state.userInviteCode = data.tuser.parentCode;
+			state.secondaryPwd = data.tuser.secondaryPwd;
 		    state.hasLogin = true;
 		},
 		// 后台相关配置
