@@ -330,7 +330,7 @@
 		},{
 			"path": "gesture_lock",
 			"style": {
-				"navigationBarTitleText": "二级密码管理"
+				"navigationBarTitleText": "密码管理"
 			}
 		},{
 			"path": "change_telphone",

@@ -58,14 +58,7 @@
 						isShowArrow: true
 					}
 				],
-				pageList2: [{
-						type: "telphone",
-						title: '换绑手机',
-						iconfont: 'iconshouji',
-						extra: {},
-						isShowExtra: false,
-						isShowArrow: true
-					},
+				pageList2: [
 					{
 						type: "money",
 						title: '累计消费',
@@ -95,17 +88,12 @@
 					// 初始化id
 					this.pageList1[1].extra.text = userinfo.tuser.id;
 					//初始化累计消费
-					this.pageList2[1].extra.text = userinfo.sales;
+					this.pageList2[0].extra.text = userinfo.sales;
 				}
 			},
 			// 关闭modal
 			closeModal(){
 				this.showModal = false;
-			},
-			// 修改昵称
-			changeNickName(){
-				// 请求接口
-				this.pageList1[1].extra.text = this.nickName;
 			},
 			// 点击跳转
 			handleClick(data) { 
@@ -115,10 +103,6 @@
 						url: "/pages/mine/gesture_lock?mode=set"
 					})
 			
-				} else if (data.item.type === "telphone") {
-					uni.navigateTo({
-						url: `/pages/mine/change_telphone`
-					})
 				}
 			},
 			// 退出当前账号
@@ -145,7 +129,7 @@
 								uni.hideLoading();
 								uni.showToast({
 									icon: "none",
-									title:  err.errMsg,
+									title:  err.message,
 								})
 							})
 							

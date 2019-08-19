@@ -39,7 +39,7 @@ function checkTokenStatus(response) {
 	// ER	token invalid	（token解码失败）请勿伪造token
 	// RF	token timeout	需要更换token
 	// OE	not latest token;token timeout	（非最新签发的token且超时）重定向到登录页面
-	const code = response.data.data.code;
+	const code = response.data.data.acode;
 	if (code === "00" || code === "RF") {
 		// 消息重发，换上新的token
 		reloadMessage(response.config)

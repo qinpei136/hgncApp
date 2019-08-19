@@ -70,7 +70,7 @@
 		uniNavBar
 	} from '@dcloudio/uni-ui';
 	import _ from "lodash";
-	import service from '../../common/service.js';
+	import service from '../../common/userService.js';
 	import util from "../../common/util.js";
 	import noData from "../../components/common/no-data.vue";
 	import { mapMutations } from 'vuex';

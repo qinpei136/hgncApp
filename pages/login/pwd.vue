@@ -204,7 +204,7 @@
 				uni.showLoading({title: '重置中'});
 				service.reSetPwd(parms).then(res => {
 					uni.hideLoading();
-					if(res.data.status === 200) {
+					if(res.data.code === 200) {
 						util.alert({
 							title:'重置密码',
 							content: res.data.data, 
