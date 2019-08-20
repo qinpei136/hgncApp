@@ -79,7 +79,7 @@
 
 <script>
 	import { uniIcon } from '@dcloudio/uni-ui';
-	import service from '../../common/service.js';
+	import userService from '../../common/userService.js';
 	export default {
 		components:{
 			uniIcon
@@ -106,8 +106,10 @@
 		},
 		methods: {
 			init(){
-				this.jfValue = 1029;
-				this.mbValue = 10299.99;
+				// 获取我的积分
+				let userinfo = uni.getStorageSync('USERS_INFO')
+				this.jfValue=userinfo.tuser.comPoint
+				this.mbValue=userinfo.tuser.gold
 			},
 			initPosition() {
 			    /**
@@ -126,14 +128,25 @@
 			},
 			// 确认转出
 			formSubmit(e){
-				 console.log('form发生了submit事件，携带数据为：' + JSON.stringify(e.detail.value))
 				 if(e.detail.value.num === "") {
+					 // uni.showToast({
+					 // 	icon: "none",
+					 // 	title:  "请输入转让的M币数量”,
+					 // });
 					 return
 				 }
 				 if(e.detail.value.id === "") {
+					 // uni.showToast({
+					 // 	icon: "none",
+					 // 	title:  "请输入转入的会员ID”,
+					 // })
 					 return
 				 }
 				 if(this.isNumInvaild) {
+					 // uni.showToast({
+					 // 	icon: "none",
+					 // 	title:  "M币必须为数字”,
+					 // })
 				 	return
 				 }
 				 // 转让
@@ -146,7 +159,7 @@
 					count: this.num
 				}
 				uni.showLoading();
-				service.transferScore(params).then(res=>{
+				userService.transferScore(params).then(res=>{
 					uni.hideLoading();
 					uni.showToast({
 						title:  "转让成功",

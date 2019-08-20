@@ -8,16 +8,9 @@
 			</view>
 			<view class="info uni-flex-item uni-flex uni-column" v-if="hasLogin">
 				<view class="username">{{userinfo.userName}}</view>
-				<!-- <view class="integral">ID: {{userinfo.id}}</view> -->
-				<view class="title-wrap uni-flex">
-					<view class="iconfont iconshouji uni-inline-item phone">
-				
-					</view>
-					<view class="title uni-inline-item">
-						<view class="phone">
-							{{userinfo.phone}}
-						</view>
-					</view>
+				<view class="integral uni-flex">
+					<text class="icon iconfont iconshouji"></text>
+					{{ encryptPhone }}
 				</view>
 			</view>
 			<view class="setting uni-inline-item">
@@ -117,7 +110,15 @@
 		},
 		computed: {
 			...mapState(["hasLogin"]),
-			...mapGetters(["dfk_num", , "dfh_num", "dsh_num"])
+			...mapGetters(["dfk_num", , "dfh_num", "dsh_num"]),
+			// 处理手机号加密
+			encryptPhone(){
+				if(this.$store.state.userPhone){
+					let start =this.$store.state.userPhone.slice(0, 3);
+					let end = this.$store.state.userPhone.slice(-4);
+					return `${start}****${end}`;
+				}
+			}
 		},
 		mounted() {
 
@@ -225,10 +226,25 @@
 					line-height: 40upx;
 					font-size: 32upx
 				}
-				.phone
-				{
-					font-size: 28upx;
-					margin: 10upx 4upx 0upx 0upx;
+				.integral {
+					display: flex;
+					align-items: center;
+					height: 40upx;
+					color: #999;
+					background-color: rgba(0, 0, 0, 0.1);
+					border-radius: 20upx;
+					font-size: 24upx;
+				
+					.icon {
+						width: 30upx;
+						height: 100%;
+						margin-right: 10upx;
+						display: block;
+						font-size: 22upx;
+						color: #fff;
+						text-align: left;
+						line-height: 42upx;
+					}
 				}
 
 				.integral {

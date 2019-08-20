@@ -130,13 +130,24 @@ const getAddressList = function() {
   * @return {promise} 返回一个promise对象     
   **/
 const editAddress = function(params) {
-	let data = {
-		UserId:vm.$store.state.userId,
-		province: params.province,
-		city: params.city,
-		region:  params.region,
-		phone:  params.phone,
-		Default:  params.Default || false
+	var data={}
+	if(params.province)
+	{
+		data = {
+			UserId:vm.$store.state.userId,
+			province: params.province,
+			city: params.city,
+			region:  params.region,
+			phone:  params.phone,
+			Default:  params.default || false
+		}
+	}
+	else
+	{
+		data = {
+			UserId:vm.$store.state.userId,
+			Default:  params.default || false
+		}
 	}
 	return vm.$http.put('/api/TAddresses/PutTAddress/'+params.id, data)
 }
@@ -180,6 +191,104 @@ const deleteAddress = function(params) {
 	return vm.$http.put('/api/TAddresses/DelTAddress/'+params.id)
 }
 
+/**     
+  * @method 查询今日释放积分  
+  * @param {String} userId  用户id 
+  **/
+const getReleaseGold = function() {
+	return vm.$http.get('/api/TUsers/GetTodayMB/'+vm.$store.state.userId)
+}
+
+/**     
+  * @method 查询用户积分历史列表  
+  * @param {String} userId   用户id 必填
+  * @param {String} isCom   是否要查普通积分标识位，默认为true
+  * @param {Number} page  第几页 默认第一页
+  * @param {Number} pageSize  每页条数 默认每页10条 
+  * @param {Number} start  开始时间 必填 
+  * @param {Number} end  结束时间 必填 
+  * @param {Number} orderBy  排序规则 选填 默认时间倒序排序 
+  **/
+const getScoreHistory = function(params) {
+	let url=vm.$store.state.userId+
+	"?pageIndex="+params.page+
+	"&pageSize="+params.pageSize+
+	"&sTime="+params.start+
+	"&eTime="+params.end
+	if(params.isCom)
+		return vm.$http.get('/api/TUsers/GetMyComPointLog/'+url)
+	else
+		return vm.$http.get('/api/TUsers/GetMyMBLog/'+url)
+		
+}
+
+/**     
+  * @method 获取 我指导的 用户  
+  * @param {String} userId   用户id 必填
+  * @param {Number} page  第几页 默认第一页
+  * @param {Number} pageSize  每页条数 默认每页10条 
+  **/
+const getMyMentor = function(params) {
+	let url=vm.$store.state.userId+
+	"?pageIndex="+params.page+
+	"&pageSize="+params.pageSize
+	return vm.$http.get('/api/TUsers/GetMyMentor/'+url)
+}
+
+/**     
+  * @method 获取我的团队(普通会员)  
+  * @param {String} userId   用户id 必填
+  * @param {Number} page  第几页 默认第一页
+  * @param {Number} pageSize  每页条数 默认每页10条 
+  **/
+const getMyCustomer = function(params) {
+	let url=vm.$store.state.userId+
+	"?pageIndex="+params.page+
+	"&pageSize="+params.pageSize
+	return vm.$http.get('/api/TUsers/GetMyCustomer/'+url)
+}
+
+/**     
+  * @method 获取我的团队 我下级的经理  
+  * @param {String} userId   用户id 必填
+  * @param {Number} page  第几页 默认第一页
+  * @param {Number} pageSize  每页条数 默认每页10条 
+  **/
+const getMyManager = function(params) {
+	let url=vm.$store.state.userId+
+	"?pageIndex="+params.page+
+	"&pageSize="+params.pageSize
+	return vm.$http.get('/api/TUsers/GetMyManager/'+url)
+}
+
+/**     
+  * @method 获取我的团队 我下级的总监  
+  * @param {String} userId   用户id 必填
+  * @param {Number} page  第几页 默认第一页
+  * @param {Number} pageSize  每页条数 默认每页10条 
+  **/
+const getMyZongjian = function(params) {
+	let url=vm.$store.state.userId+
+	"?pageIndex="+params.page+
+	"&pageSize="+params.pageSize
+	return vm.$http.get('/api/TUsers/GetMyZongjian/'+url)
+}
+
+/**     
+  * @method 转移专用积分  
+  * @param {String} from  用户邀请码
+  * @param {String} to  目标用户邀请码
+  * @param {String} count 转移数量     
+  **/
+const transferScore = function(params) {
+	let data = {
+		UserId: params.to,
+		MB: params.count,
+	}
+	return vm.$http.put('/api/TUsers/PutTUserMB/'+vm.$store.state.userId, data)
+}
+
+
 const LOGIN_MODULE = {
 	getSms,
 	register,
@@ -204,15 +313,18 @@ const LOGIN_MODULE = {
 const NEARBY_MODULE = {
 
 }
-// const VIPCENTER_MODULE = {
-// 	getReleaseGold,
-// 	transferScore,
-// 	getScoreHistory,
-// 	getGroupMembers,
-// 	getMyTeamNum,
-// 	getMyTeamPerformancem,
-// 	getMyTeamPoint
-// }
+const VIPCENTER_MODULE = {
+	getReleaseGold,
+	transferScore,
+	getScoreHistory,
+	getMyMentor,
+	getMyCustomer,
+	getMyManager,
+	getMyZongjian,
+	// getMyTeamNum,
+	// getMyTeamPerformancem,
+	// getMyTeamPoint
+}
 // const SHOPCART_MODULE = {
 // 	getCartList,
 // 	addToCart,
@@ -236,9 +348,9 @@ const MINE_MODULE = {
 }
 export default {
 	...LOGIN_MODULE,
-	/* ...HOME_MODULE,
-	...NEARBY_MODULE,
+	// ...HOME_MODULE,
+	// ...NEARBY_MODULE,
 	...VIPCENTER_MODULE,
-	...SHOPCART_MODULE,*/
+	// ...SHOPCART_MODULE,
 	...MINE_MODULE 
 }

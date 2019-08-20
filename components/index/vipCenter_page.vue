@@ -36,7 +36,7 @@
 						我的积分
 					</view>
 					<view class="bottom">
-						999
+						{{myScore}}
 					</view>
 				</view>
 				<view class="row-item uni-flex-item uni-center">
@@ -56,7 +56,7 @@
 						M币钱包>
 					</view>
 					<view class="bottom">
-						9999.99枚
+						{{myMbScore}}
 					</view>
 				</view>
 			</view>
@@ -148,7 +148,7 @@
 		mapActions
 	} from 'vuex';
 	import util from "../../common/util.js";
-	import service from "../../common/service.js";
+	import userService from "../../common/userService.js";
 	import myList from "../../components/common/my-list";
 	export default {
 		components: {
@@ -225,6 +225,9 @@
 		},
 		methods: {
 			init() {
+				let userinfo = uni.getStorageSync('USERS_INFO')
+				this.myScore=userinfo.tuser.comPoint
+				this.myMbScore=userinfo.tuser.gold
 				// 查询今日释放积分
 				this.getReleaseGold();
 				// 判断当前用户是否，已经进行实名认证了
@@ -233,9 +236,9 @@
 			// 查询今日释放积分
 			getReleaseGold(){
 				uni.showLoading()
-				service.getReleaseGold().then(res=>{
+				userService.getReleaseGold().then(res=>{
 					uni.hideLoading();
-					this.releasedToday = res.data.data || "0.00";
+					this.releasedToday = res.data.result || "0.00";
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({

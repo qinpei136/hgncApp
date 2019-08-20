@@ -4,7 +4,7 @@
 		<view class="header">
 			<view class="search-box uni-inline-item">
 				<!-- mSearch组件 如果使用原样式，删除组件元素-->
-				<mSearch :mode="2" button="inside" :placeholder="'搜索用户ID'" @search="doSearch()" @confirm="doSearch()" v-model="keyword"
+				<mSearch :mode="2" button="inside" :placeholder="'搜索用户手机号'" @search="doSearch()" @confirm="doSearch()" v-model="keyword"
 				 radius="0" @input="clear"></mSearch>
 			</view>
 			<view class="tabs uni-flex" v-if="tabs.length >0">
@@ -15,7 +15,7 @@
 				</view>
 			</view>
 		</view>
-		<view class="list-wrap">
+		<view class="list-wrap" v-bind:class="{member:tabs.length ==0}">
 			<view class="totalNum uni-text-small text-color-gray">
 				共计<text class="num">{{totalNum}}</text>人
 			</view>
@@ -27,20 +27,20 @@
 					<view class="info uni-flex-item uni-flex" @tap="toManagerAchievement">
 						<view class="uni-flex-item uni-flex uni-column" style="justify-content: center;">
 							<view class="uni-flex uni-row" style="align-items: center;">
-								<text class="">{{item.name}}</text>
+								<text class="">{{item.userName}}</text>
 								<view class="tag" :class="{'yellow': item.role >= 1}" v-if="currentTab==='member'">
 									<view class="iconfont iconicon_member_nor"></view>
 									<text>{{item.role >= 1 ? "Vip" : "注册会员"}}</text>
 								</view>
 							</view>
 							<view class="uni-text-small text-color-gray">
-								ID: {{item.id}}
+								手机号: {{item.phone}}
 							</view>
 						</view>
 						<!-- 团队会员 -->
 						<block v-if="currentTab==='member'">
 							<view class="member uni-flex-item uni-flex uni-row uni-text-small text-color-gray">
-								邀请日期： <text class="time">{{item.createTime}}</text>
+								邀请日期： <text class="time">{{item.createTime.substr(0,10)}}</text>
 							</view>
 						</block>
 						<!-- 销售经理 -->
@@ -73,10 +73,11 @@
 	} from '@dcloudio/uni-ui';
 	import * as _ from 'lodash';
 	import moment from "moment";
-	import service from '../../common/service.js';
+	import userService from '../../common/userService.js';
 	import mSearch from '../../components/common/mehaotian-search-revision.vue';
 	// 引入暂无数据组件
 	import noData from "../../components/common/no-data.vue";
+	
 	import {
 		mapState,
 		mapMutations,
@@ -126,7 +127,15 @@
 				majordomoList: [],
 				// 是否有数据
 				hasData: false,
+				page: 1,
+				pageSize: 10,
+				// 是否显示回到顶部按钮
+				isShowBtn: false,
 			}
+		},
+		onReachBottom() {
+			this.page++
+			this.initList();
 		},
 		computed: {
 			...mapState(["userLevel"]),
@@ -182,118 +191,30 @@
 				} else {
 					this.tabs = [];
 				}
-				this.tabs = TABS_FOR_MAJORDOMO;
+				//this.tabs = TABS_FOR_MAJORDOMO;
 			},
 			// 初始化list
 			initList() {
 				uni.showLoading();
-				service.getGroupMembers().then(res => {
-						uni.hideLoading();
-						let data = res.data.data;
-						console.log(data);
-						// if(data.length > 0) {
-						data = [{
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "辅导费",
-							id: 29472923,
-							createTime: 1554342330693,
-							userLevel: 1,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "公公公",
-							id: 23455555,
-							createTime: 1554342330693,
-							userLevel: 2,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: 1554342330693,
-							userLevel: 3,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: 1554342330693,
-							userLevel: 1,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: 1554342330693,
-							userLevel: 2,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: 1554342330693,
-							userLevel: 1,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: 1554342330693,
-							userLevel: 3,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: "2099/04/15",
-							userLevel: 1,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: 1554342330693,
-							userLevel: 1,
-							num: 302,
-							achievement: 4002.89
-						}, {
-							imageUrl: "/static/HM-PersonalCenter/face_default.png",
-							name: "热特瑞",
-							id: 757575,
-							createTime: 1554342330693,
-							userLevel: 1,
-							num: 302,
-							achievement: 4002.89
-						}]
-						_.forEach(data, item => {
-							// 转化时间格式
-							console.log(item.createTime);
-							item.createTime = moment(item.createTime).format("YYYY/MM/DD");
-							console.log(item.createTime);
-							if (item.userLevel === 1) {
-								this.memberList.push(item)
-							} else if (item.userLevel === 2) {
-								this.managerList.push(item)
-							} else if (item.userLevel === 3) {
-								this.majordomoList.push(item)
-							}
-						})
-					// }
-				}).catch(err => {
+				let params = {
+					page: this.page,
+					pageSize : this.pageSize,
+					keyword:this.keyword,
+					orderBy: [['createTime','desc']]
+				}
+				if (this.userLevel >= 3) {
+					this.getMyCustomer(params)
+					this.getMyManager(params)
+					this.getMyZongjian(params)
+					
+				} else if (this.userLevel === 2) {
+					this.getMyCustomer(params)
+					this.getMyManager(params)
+					
+				} else {
+					this.getMyMentor(params)
+				} 
 				uni.hideLoading();
-				uni.showToast({
-					icon: "none",
-					title: err.errMsg,
-				})
-			})
 		},
 		getListByOrder(){
 			let list = [];
@@ -328,7 +249,8 @@
 		doSearch() {
 			// 不为空才查询
 			if (this.keyword) {
-				this.dataList = _.find(this.dataList, item => _.indexOf(item.id, this.keyword) > -1);
+				this.initList()
+				//this.dataList = _.find(this.dataList, item => _.indexOf(item.id, this.keyword) > -1);
 			}
 		},
 		// 经理业绩查询
@@ -338,7 +260,74 @@
 					url: "/pages/vipCenter/performance_management?role=manager"
 				})
 			}
-		}
+		},
+	
+	
+	//获取 我指导的 用户
+	getMyMentor(params){
+		this.memberList=[]
+		userService.getMyMentor(params).then(res=>{
+			let data = res.data.result;
+			if(data.length > 0) {
+				this.memberList=data
+			}
+			
+		}).catch(err=>{
+			uni.showToast({
+				icon:"none",
+				title: err.errMsg
+			})
+		})
+	},
+	
+	//获取我的团队(普通会员)
+	getMyCustomer(params){
+		this.memberList=[]
+		userService.getMyCustomer(params).then(res=>{
+			let data = res.data.result;
+			if(data.length > 0) {
+				this.memberList=data
+			}
+			
+		}).catch(err=>{
+			uni.showToast({
+				icon:"none",
+				title: err.errMsg
+			})
+		})
+	},
+	//获取我的团队 我下级的经理
+	getMyManager(params){
+		this.managerList=[]
+		userService.getMyManager(params).then(res=>{
+			let data = res.data.result;
+			if(data.length > 0) {
+				this.managerList=data
+			}
+			
+		}).catch(err=>{
+			uni.showToast({
+				icon:"none",
+				title: err.errMsg
+			})
+		})
+	},
+	//获取我的团队 我下级的总监
+	getMyZongjian(params){
+			this.majordomoList=[]
+			userService.getMyZongjian(params).then(res=>{
+				let data = res.data.result;
+				if(data.length > 0) {
+					this.majordomoList=data
+				}
+				
+			}).catch(err=>{
+				uni.showToast({
+					icon:"none",
+					title: err.errMsg
+				})
+			})
+		},
 	},
 	onLoad() {
 		this.init();
@@ -515,5 +504,8 @@
 			}
 		}
 
+		.member{
+			padding-top: 90upx;
+		}
 	}
 </style>

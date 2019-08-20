@@ -15,12 +15,12 @@ export default {
 				select_icon:'iconicon_nearby_sel'
 			},
 			// 开发调试使用，后续删掉
-			// {
-			// 	name:'会员中心',
-			// 	name_code:'vipCenter',
-			// 	icon:'iconicon_member_nor',
-			// 	select_icon:'iconicon_member_sel'
-			// },
+			{
+				name:'会员中心',
+				name_code:'vipCenter',
+				icon:'iconicon_member_nor',
+				select_icon:'iconicon_member_sel'
+			},
 			{
 				name:'购物车',
 				name_code:'shopCart',

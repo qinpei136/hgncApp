@@ -10,7 +10,7 @@
 						我的积分
 					</view>
 					<view class="bottom uni-text-small">
-						{{jfValue}}
+						{{myScore}}
 					</view>
 				</view>
 			</view>
@@ -21,7 +21,7 @@
 						今日释放积分
 					</view>
 					<view class="bottom uni-text-small">
-						{{jfValue}}枚
+						{{releasedToday}}枚
 					</view>
 				</view>
 			</view>
@@ -32,7 +32,7 @@
 						M币钱包
 					</view>
 					<view class="bottom uni-text-small">
-						{{mbValue}}枚
+						{{myMbScore}}枚
 					</view>
 				</view>
 			</view>
@@ -112,16 +112,16 @@
 				<!-- 内容 -->
 				<view class="table-body uni-flex uni-row" v-for="(item, index) in dataList" :key="index" :class="{'active':index%2 != 0}">
 					<view class="time">
-						{{item.time}}
+						{{item.createTime}}
 					</view>
 					<view class="changed">
-						+{{item.changed}}
+						{{item.addcomPoint>0?("+"+item.addcomPoint):item.addcomPoint}}
 					</view>
 					<view class="balance">
-						{{item.balance}}
+						{{item.comPoint}}
 					</view>
 					<view class="remark">
-						{{item.remark}}
+						{{item.description}}
 					</view>
 				</view>
 			</view>
@@ -138,7 +138,7 @@
 	import moment from "moment";
 	import MxDatePicker from "../../components/mx-datepicker/mx-datepicker.vue";
 	import scrollToTop from "../../components/common/scroll-to-top.vue";
-	import service from "../../common/service.js";
+	import userService from "../../common/userService.js";
 
 	export default {
 		components: {
@@ -191,8 +191,10 @@
 		},
 		methods: {
 			init() {
-				this.mbValue = 10299.99;
 				// 获取我的积分
+				let userinfo = uni.getStorageSync('USERS_INFO')
+				this.myScore=userinfo.tuser.comPoint
+				this.myMbScore=userinfo.tuser.gold
 				// 获取今日释放积分
 				this.getReleaseGold();
 				// 获取M币钱包
@@ -224,9 +226,9 @@
 			},
 			getReleaseGold(){
 				uni.showLoading()
-				service.getReleaseGold().then(res=>{
+				userService.getReleaseGold().then(res=>{
 					uni.hideLoading();
-					this.releasedToday = res.data.data || "0.00";
+					this.releasedToday = res.data.result || "0.00";
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -265,15 +267,22 @@
 					isCom: this.currentTab=='jf' ? true: false,
 					page: this.page,
 					pageSize : this.pageSize,
-					start: moment(start).valueOf(),
-					end: moment(end).valueOf(),
+					start: start,
+					end: end,
 					orderBy: [['createTime','desc']]
 				}
-				service.getScoreHistory(param).then(res=>{
+				userService.getScoreHistory(param).then(res=>{
 					uni.hideLoading();
-					let data = res.data.data;
-					console.log(data);
-								
+					let data = res.data.result;
+					if(this.currentTab!='jf')
+					{
+						for(var i in data)
+						{
+							data[i].addcomPoint=data[i].addgold
+							data[i].comPoint=data[i].gold
+						}
+					}
+					this.dataList=data
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({

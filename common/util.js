@@ -11,6 +11,12 @@ const domainImg="https://yymall.maiyidesan.cn/YYSYS"
  */
 import store from '../store/index.js';
 import _ from 'lodash';
+
+
+//引入vue
+import Vue from 'vue';
+//必须实例化 Vue
+let vm = new Vue();
 /**     
  * @method 表单优雅校验   
  * @param {String} error 错误提示  
@@ -174,7 +180,8 @@ const switchTab = function(type) {
 const guardToLogin = function(code) {
 	return new Promise((reslove, reject) => {
 		// 获取登录状态
-		const hasLogin = store.state.hasLogin;
+		// const hasLogin = store.state.hasLogin;
+		const hasLogin=vm.$store.state.hasLogin
 		if (hasLogin) {
 			reslove();
 		} else {
@@ -264,7 +271,10 @@ const setImageUrl = function(params) {
  * @param {String} img 图片地址
  **/
 const getImageUrl = function(img) {
-	return domainImg+img
+	if(img)
+		return domainImg+img
+	else
+		return ""
 }
 
 /**     

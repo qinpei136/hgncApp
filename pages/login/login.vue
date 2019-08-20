@@ -705,8 +705,10 @@
 			this.initProvider();
 			this.initPosition();
 			// 获取路由参数
-			this.loginData.phone = option.phone || "";
-			this.loginData.password = option.password || "";
+			this.loginData.phone = "15652581188";
+			this.loginData.password = "111";
+			// this.loginData.phone = option.phone || "";
+			// this.loginData.password = option.password || "";
 			this.pageCode = option.pageCode;
 		}
 	}

@@ -12,17 +12,17 @@ const store = new Vuex.Store({
 		// 是否强制登录
 		forcedLogin: false,
 		// 是否已经登录
-		hasLogin: false,
+		hasLogin: true,
 		// 用户名
-		userName: "",
+		userName: "秦佩",
 		// 用户等级，分为0,1,2,3,4五个等级
-		userLevel: 0,
+		userLevel: 1,
 		// 用户id
-		userId: "",
+		userId: "293a8598-739b-4653-9e73-eb869f2b6bdb",
 		// 用户头像
 		userFace: "",
 		// 用户手机号
-		userPhone: "",
+		userPhone: "15652581188",
 		// 用户的邀请码
 		userInviteCode: '',
 		// 商品积分率
@@ -46,7 +46,7 @@ const store = new Vuex.Store({
 		
 		LOGIN(state, data) {
 		    state.userName = data.userName || 'PY_'+ data.phone;
-			state.userLevel = data.tuser.role;
+			state.userLevel =1// data.tuser.role;
 			state.userId = data.tuser.id;
 			state.userFace = data.tuser.face || '/static/HM-PersonalCenter/face_default.png';
 			state.userPhone = data.tuser.phone;
