@@ -115,6 +115,71 @@ const getOrderList = function(params) {
 	return vm.$http.get('/api/TOrders/GetTOrder_user/'+url)
 }
 
+/**     
+  * @method 查询地址列表  
+  * @param {String} userId  用户id 
+  * @return {promise} 返回一个promise对象     
+  **/
+const getAddressList = function() {
+	return vm.$http.get('/api/TAddresses/GetTAddress/'+vm.$store.state.userId)
+}
+
+/**     
+  * @method 编辑地址信息  
+  * @param {String} id  地址行id 
+  * @return {promise} 返回一个promise对象     
+  **/
+const editAddress = function(params) {
+	let data = {
+		UserId:vm.$store.state.userId,
+		province: params.province,
+		city: params.city,
+		region:  params.region,
+		phone:  params.phone,
+		Default:  params.Default || false
+	}
+	return vm.$http.put('/api/TAddresses/PutTAddress/'+params.id, data)
+}
+
+/**     
+  * @method 新增地址  
+  * @param {String} province  省份 
+  * @param {String} city  市
+  * @param {String} region  区
+  * @param {String} street  街道
+  * @param {String} detail  地址详情
+  * @param {String} receiver  收件人
+  * @param {String} phone  手机号
+  * @param {Boolean} default  是否默认
+  * @param {String} tag  标签   家|公司
+  * @return {promise} 返回一个promise对象     
+  **/
+const addAddress = function(params) {
+	let data = {
+		userId:vm.$store.state.userId,
+		province: params.province,
+		city: params.city,
+		region:  params.region,
+		detail:  params.detail,
+		receiver:  params.receiver,
+		phone:  params.phone,
+		default:  params.default || false
+	}
+	return vm.$http.post('/api/TAddresses/PostTAddress', data)
+}
+
+/**     
+  * @method 删除用户名下地址信息  
+  * @param {String} id  地址id 
+  * @return {promise} 返回一个promise对象     
+  **/
+const deleteAddress = function(params) {
+	let data = {
+		id: params.id
+	}
+	return vm.$http.put('/api/TAddresses/DelTAddress/'+params.id)
+}
+
 const LOGIN_MODULE = {
 	getSms,
 	register,
@@ -122,59 +187,58 @@ const LOGIN_MODULE = {
 	reSetPwd,
 	logout,
 	setSecondaryPwd,
-	getOrderList,
 	// getConfigs,
 	// changeBindPhone,
 	// refleshToken
 }
-/* const HOME_MODULE = {
-	getGoodTopClass,
-	getGoodSecondClass,
-	getGoodListByType,
-	getGoodListById,
-	getGoodListBySearch,
-	getRecommendGoodList,
-	// 2019-06 16新增
-	getGoodListByTopClassType
-}
+// const HOME_MODULE = {
+// 	getGoodTopClass,
+// 	getGoodSecondClass,
+// 	getGoodListByType,
+// 	getGoodListById,
+// 	getGoodListBySearch,
+// 	getRecommendGoodList,
+// 	// 2019-06 16新增
+// 	getGoodListByTopClassType
+// }
 const NEARBY_MODULE = {
 
 }
-const VIPCENTER_MODULE = {
-	getReleaseGold,
-	transferScore,
-	getScoreHistory,
-	getGroupMembers,
-	getMyTeamNum,
-	getMyTeamPerformancem,
-	getMyTeamPoint
-}
-const SHOPCART_MODULE = {
-	getCartList,
-	addToCart,
-	deleteFromCart,
-	createOrder,
-	callbackAfterPay
-}
+// const VIPCENTER_MODULE = {
+// 	getReleaseGold,
+// 	transferScore,
+// 	getScoreHistory,
+// 	getGroupMembers,
+// 	getMyTeamNum,
+// 	getMyTeamPerformancem,
+// 	getMyTeamPoint
+// }
+// const SHOPCART_MODULE = {
+// 	getCartList,
+// 	addToCart,
+// 	deleteFromCart,
+// 	createOrder,
+// 	callbackAfterPay
+// }
 const MINE_MODULE = {
 	getAddressList,
 	editAddress,
 	addAddress,
 	deleteAddress,
 	getOrderList,
-	deleteOrder,
-	receivedOrder,
-	getOrderDetail,
-	setSecondaryPwd,
-	changeSecondaryPwd,
-	forgetSecondaryPwd,
-	validSecondaryPwd
-} */
+	// deleteOrder,
+	// receivedOrder,
+	// getOrderDetail,
+	// setSecondaryPwd,
+	// changeSecondaryPwd,
+	// forgetSecondaryPwd,
+	// validSecondaryPwd
+}
 export default {
 	...LOGIN_MODULE,
 	/* ...HOME_MODULE,
 	...NEARBY_MODULE,
 	...VIPCENTER_MODULE,
-	...SHOPCART_MODULE,
-	...MINE_MODULE */
+	...SHOPCART_MODULE,*/
+	...MINE_MODULE 
 }

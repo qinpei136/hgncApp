@@ -49,7 +49,7 @@
 	} from '@dcloudio/uni-ui';
 	import _  from 'lodash';
 	import { mapMutations, mapGetters, mapActions } from 'vuex';
-	import service from '../../common/service.js';
+	import service from '../../common/userService.js';
 	import util from '../../common/util.js';
 	// 三级联动
 	import mpvueCityPicker from '../../components/mpvue-citypicker/mpvueCityPicker.vue'
@@ -214,7 +214,6 @@
 				}
 				
 				let params = {
-					// userId: "660efd50-4c6f-11e9-bc7c-95dfc83db603",
 					userId: this.$store.state.userId,
 					id: this.id,
 					province: this.address.province,
@@ -232,38 +231,48 @@
 				// 编辑或者新增
 				service[`${this.mode}Address`](params).then(res=>{
 					uni.hideLoading();
-					uni.showToast({
-						title: "收货地址已保存",
-						success: function(){
-							setTimeout(()=>{
-								// 返回上一级页面
-								uni.navigateBack()
-							},800)
+					if(res.data.code=="200")
+					{
+						uni.showToast({
+							title: "收货地址已保存",
+							success: function(){
+								setTimeout(()=>{
+									// 返回上一级页面
+									uni.navigateBack()
+								},800)
+							}
+						})	
+						if(this.mode === "add"){
+							// 清空信息
+							this.addresses = "";
+							this.receiver = "";
+							this.phone = "";
+							this.isDefault = false;
+							this.address = {
+								country: "",
+								province: "",
+								city: "",
+								district: "",
+								street: ""
+							}
 						}
-					})	
-					if(this.mode === "add"){
-						// 清空信息
-						this.addresses = "";
-						this.receiver = "";
-						this.phone = "";
-						this.isDefault = false;
-						this.address = {
-							country: "",
-							province: "",
-							city: "",
-							district: "",
-							street: ""
-						}
+						// 同步vuex修改后的数据
+						this.updataAddressList();
 					}
-					// 同步vuex修改后的数据
-					this.updataAddressList();
+					else
+					{
+						uni.showToast({
+							icon: "none",
+							title: res.data.msg
+						})
+					}
 					
 				}).catch(err=>{
 					console.log(err)
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
-						title: err.errMsg,
+						title: err.message,
 					})
 				})
 			},		

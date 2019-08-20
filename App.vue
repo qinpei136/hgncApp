@@ -1,6 +1,7 @@
 <script>
 	import { mapMutations, mapState } from "vuex";
 	import service from "./common/service.js";
+	import userService from "./common/userService.js";
 	import _  from 'lodash';
 	import util from './common/util.js';
 	
@@ -43,13 +44,13 @@
 				const userLevel = userInfo.role || 0;
 				const userId = userInfo.id;
 				/* // 获取购物车数据
-				this.getCartList(userId);
+				this.getCartList(userId); */
 				// 获取收货地址
-				this.getAddress(userId);
+				userService.getAddress(userId);
 				// 获取订单列表数据
-				this.getOrderList(userId); */
+				userService.getOrderList(userId);
 				// 设置底部导航栏
-				this.setfooterBar(userLevel);
+				// this.setfooterBar(userLevel);
 				// 缓存用户信息
 				uni.setStorageSync('USERS_INFO', userInfo);
 				// 同步store里面的用户名称，等级

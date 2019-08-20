@@ -8,7 +8,17 @@
 			</view>
 			<view class="info uni-flex-item uni-flex uni-column" v-if="hasLogin">
 				<view class="username">{{userinfo.userName}}</view>
-				<view class="integral">ID: {{userinfo.id}}</view>
+				<!-- <view class="integral">ID: {{userinfo.id}}</view> -->
+				<view class="title-wrap uni-flex">
+					<view class="iconfont iconshouji uni-inline-item phone">
+				
+					</view>
+					<view class="title uni-inline-item">
+						<view class="phone">
+							{{userinfo.phone}}
+						</view>
+					</view>
+				</view>
 			</view>
 			<view class="setting uni-inline-item">
 				<uni-icon type="arrowright" size="20"></uni-icon>
@@ -64,9 +74,6 @@
 		</view>
 		<!-- 跳转列表 -->
 		<myList :pageList="pageList" @handleClick="handleClick"></myList>
-		<view class="version">
-			当前版本号: {{version}}
-		</view>
 	</view>
 </template>
 <script>
@@ -91,8 +98,7 @@
 				userinfo: {},
 				version: "",
 				// 跳转其他功能页面列表
-				pageList: [
-					{
+				pageList: [{
 						title: '收货地址',
 						iconfont: 'iconaddress',
 						extra: {},
@@ -111,10 +117,10 @@
 		},
 		computed: {
 			...mapState(["hasLogin"]),
-			...mapGetters(["dfk_num",, "dfh_num", "dsh_num"])
+			...mapGetters(["dfk_num", , "dfh_num", "dsh_num"])
 		},
 		mounted() {
-			
+
 			// 刷新用户信息
 			this.refreshMemberInfo();
 			this.updataOrderList();
@@ -135,7 +141,8 @@
 				this.userinfo = {
 					face: '/static/HM-PersonalCenter/face_default.png',
 					userName: this.$store.state.userName,
-					id: this.$store.state.userId
+					id: this.$store.state.userId,
+					phone: this.$store.state.userPhone
 				}
 			},
 			login() {
@@ -183,6 +190,7 @@
 	.minePage {
 		/* #ifdef APP-PLUS */
 		padding-top: var(--status-bar-height);
+
 		/* #endif */
 		.header {
 			background: linear-gradient(135deg, #242424, #343434);
@@ -191,11 +199,13 @@
 			padding: 20upx 30upx;
 			box-sizing: border-box;
 			align-items: center;
+
 			.face {
 				width: 130upx;
 				height: 130upx;
 				border-radius: 50%;
 				margin-right: 30upx;
+
 				image {
 					display: inline-block;
 					border: 4px solid #fff;
@@ -208,12 +218,19 @@
 
 			.info {
 				color: #fff;
+
 				.username {
 					width: 100%;
 					height: 40upx;
 					line-height: 40upx;
 					font-size: 32upx
 				}
+				.phone
+				{
+					font-size: 28upx;
+					margin: 10upx 4upx 0upx 0upx;
+				}
+
 				.integral {
 					width: 100%;
 					padding: 0;
@@ -222,7 +239,7 @@
 					color: #999;
 				}
 			}
-			
+
 			.setting {
 				color: #fff;
 			}
@@ -286,7 +303,8 @@
 							justify-content: center;
 							z-index: 10;
 						}
-						.iconfont{
+
+						.iconfont {
 							display: block;
 							width: 60upx;
 							height: 60upx;

@@ -39,8 +39,17 @@ function checkTokenStatus(response) {
 	// ER	token invalid	（token解码失败）请勿伪造token
 	// RF	token timeout	需要更换token
 	// OE	not latest token;token timeout	（非最新签发的token且超时）重定向到登录页面
-	const code = response.data;
-	if (code === "00" || code === "RF") {
+	const code = response.data.code;
+	// if(code==401)
+	// {
+	// 	uni.removeStorageSync('USERS_INFO');
+	// 	uni.removeStorageSync('USER_TOKEN');
+	// 	// 重定向到登录页面
+	// 	uni.navigateTo({
+	// 		url: "/pages/login/login"
+	// 	})
+	// }
+	/* if (code === "00" || code === "RF") {
 		// 消息重发，换上新的token
 		reloadMessage(response.config)
 	} else if (code === "FF" || code === "SF" || code === "ER" || code === "OE") {
@@ -61,7 +70,7 @@ function checkTokenStatus(response) {
 				url: "/pages/login/login"
 			})
 		}	
-	}
+	} */
 }
 
 /* 消息重发 */

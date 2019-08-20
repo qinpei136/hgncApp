@@ -5,7 +5,7 @@
 		</view>
 		<view class="address-list">
 			<radio-group @change="radioChange">
-				<view class="address-item" v-for="(item, index) in getAddressList" :key="index" @tap="selectAddr(item)">
+				<view class="address-item" v-for="(item, index) in getAddressList" :key="index" ><!-- @tap="selectAddr(item)" -->
 					<view class="info">
 						<view class="uni-bold uni-h5">
 							{{item.receiver}} &nbsp;&nbsp;{{item.phone}}
@@ -18,7 +18,7 @@
 						<view class="set-default uni-flex">
 							<label class="uni-flex">
 								<view class="checkbox uni-flex-item">
-									<radio :value="item.id" :checked="item.default === 1"></radio>
+									<radio :value="item.id" :checked="item.default === true"></radio>
 								</view>
 								<text class="uni-text common-pl-20">
 									设为默认
@@ -58,7 +58,7 @@
 	} from '@dcloudio/uni-ui';
 	import _ from "lodash";
 	import { mapMutations, mapGetters, mapActions } from 'vuex';
-	import service from '../../common/service.js';
+	import userService from '../../common/userService.js';
 	export default{
 		components: {
 			uniIcon
@@ -91,15 +91,11 @@
 				}, 1000);
 			},
 			init(){
-				let params = {
-					userId: this.$store.state.userId,
-					// userId: "660efd50-4c6f-11e9-bc7c-95dfc83db603"
-				}
 				// 获取用户收获地址列表
 				uni.showLoading();
-				service.getAddressList(params).then(res=>{
+				userService.getAddressList().then(res=>{
 					uni.hideLoading();
-					let data = res.data.data;
+					let data = res.data.result;
 					if(data.length > 0) {
 						// this.addressList = data;
 						this.INIT_ADDRESS(data);
@@ -109,7 +105,7 @@
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
-						title: err.errMsg,
+						title: err.message,
 					})
 				})
 			},
@@ -121,7 +117,7 @@
 					default: true
 				}
 				uni.showLoading();
-				service.editAddress(params).then(res=>{
+				userService.editAddress(params).then(res=>{
 					uni.hideLoading();
 					uni.showToast({
 						title: "已保存为默认"
@@ -155,7 +151,7 @@
 								id: id,
 							}
 							uni.showLoading();
-							service.deleteAddress(params).then(res=>{
+							userService.deleteAddress(params).then(res=>{
 								uni.hideLoading();
 								uni.showToast({
 									title: "地址已删除"
@@ -175,7 +171,6 @@
 						}
 					}
 				})
-				
 			},
 			addAddress(){
 				uni.navigateTo({

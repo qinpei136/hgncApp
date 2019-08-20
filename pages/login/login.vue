@@ -103,7 +103,7 @@
 	import {
 		mapMutations
 	} from 'vuex';
-	import service from '../../common/userService.js';
+	import userService from '../../common/userService.js';
 	import util from '../../common/util.js';
 
 	export default {
@@ -208,11 +208,11 @@
 						checkType: "notnull",
 						name: "phone",
 						errorMsg: "请输入手机号"
-					}/* , {
+					}, {
 						checkType: "phoneno",
 						name: "phone",
 						errorMsg: "请输入正确的手机号"
-					} */]
+					}]
 				}, {
 					name: "password",
 					rules: [{
@@ -247,7 +247,7 @@
 					title: '加载中...'
 				});
 						uni.setStorageSync("USER_TOKEN", "");
-				service.login(parms).then(res => {
+				userService.login(parms).then(res => {
 					if(res.data.code=="200")
 					{
 						// 请求成功
@@ -256,16 +256,16 @@
 						const token = res.data.msg;
 						// 缓存用户token
 						uni.setStorageSync("USER_TOKEN", token);
-						/* // 用户角色等级
-						const userLevel = data.role || 0;
+						// 用户角色等级
+						const userLevel = data.tuser.role || 0;
 						// 获取购物车数据
-						this.getCartList(data.id);
-						// 获取收货地址
-						this.getAddress(data.id);
+						// this.getCartList(data.id);
+						//获取收货地址
+						this.getAddress();
 						// 获取订单列表数据
-						this.getOrderList(data.id);
+						this.getOrderList();
 						// 设置底部导航栏
-						this.setfooterBar(userLevel); */
+						// this.setfooterBar(userLevel);
 						// 缓存用户信息
 						data.userName = data.tuser.userName ? data.tuser.userName : 'PY_' + data.tuser.phone;
 						uni.setStorageSync('USERS_INFO', data);
@@ -398,7 +398,7 @@
 				uni.showLoading({
 					title: '注册中'
 				});
-				service.register(parms).then(res => {
+				userService.register(parms).then(res => {
 					if(res.data.code=="200")
 					{
 						uni.hideLoading();
@@ -479,7 +479,7 @@
 					const parms = {
 						phone: this.registerData.phone
 					}
-					service.getSms(parms).then(res => {
+					userService.getSms(parms).then(res => {
 						this.registerData.msg = res.data.msg
 						this.registerData.expiryTime =new Date().setMinutes(new Date().getMinutes() + 10);
 						uni.showToast({
@@ -625,7 +625,7 @@
 					title: "加载中"
 				})
 				// 获取用户收获地址列表
-				service.getAddressList(params).then(res => {
+				userService.getAddressList().then(res => {
 					uni.hideLoading();
 					let data = res.data.data;
 					if (data.length > 0) {
@@ -646,7 +646,7 @@
 				}
 				let params = {
 					userId: userId,
-					status: "", // 查询全部
+					status: "a", // 查询全部
 					page: 1,
 					pageSize: 1000
 				}
@@ -654,7 +654,7 @@
 					title: "加载中"
 				})
 				// 获取用户收获地址列表
-				service.getOrderList(params).then(res => {
+				userService.getOrderList(params).then(res => {
 					uni.hideLoading();
 					let data = res.data.data.data;
 					if (data.length > 0) {

@@ -1,4 +1,4 @@
-import service from "../../common/service.js";
+import service from "../../common/userService.js";
 import _ from "lodash";
 
 export default {
@@ -37,7 +37,7 @@ export default {
 			let userId = ctx.rootState.userId;
 			ctx.commit("INIT_ADDRESS", []);
 			service.getAddressList({userId: userId}).then(res=>{
-				let data = res.data.data; 
+				let data = res.data.result; 
 				ctx.commit("INIT_ADDRESS", data);
 			}).catch(err=>{
 				
