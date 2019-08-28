@@ -219,6 +219,33 @@
                     })
                 }
             },
+		
+			//确认提交
+			formSubmit(e){
+				 if(e.detail.value.num === "") {
+					 // uni.showToast({
+					 // 	icon: "none",
+					 // 	title:  "请输入转让的M币数量”,
+					 // });
+					 return
+				 }
+				 if(e.detail.value.id === "") {
+					 // uni.showToast({
+					 // 	icon: "none",
+					 // 	title:  "请输入转入的会员ID”,
+					 // })
+					 return
+				 }
+				 if(this.isNumInvaild) {
+					 // uni.showToast({
+					 // 	icon: "none",
+					 // 	title:  "M币必须为数字”,
+					 // })
+				 	return
+				 }
+				 // 转让
+				 this.transferScore();
+			},
 		},
 		onLoad() {
 			this.init();

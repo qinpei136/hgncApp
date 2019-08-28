@@ -161,9 +161,23 @@
 				uni.showLoading();
 				userService.transferScore(params).then(res=>{
 					uni.hideLoading();
-					uni.showToast({
-						title:  "转让成功",
-					})
+					if(res.data.code==200)
+					{
+						let userinfo = uni.getStorageSync('USERS_INFO')
+						this.mbValue=res.data.result
+						userinfo.tuser.gold=res.data.result
+						uni.setStorageSync('USERS_INFO', userinfo);
+						uni.showToast({
+							title:  "转让成功",
+						})
+					}
+					else
+					{
+						uni.showToast({
+							icon: "none",
+							title:  res.data.msg,
+						})
+					}
 				}).catch(err => {
 					uni.hideLoading();
 					uni.showToast({
