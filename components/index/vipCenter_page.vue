@@ -53,7 +53,7 @@
 					<view class="iconfont iconwallet1 flex-center-center">
 					</view>
 					<view class="top">
-						M币钱包>
+						M币钱包
 					</view>
 					<view class="bottom">
 						{{myMbScore}}
@@ -99,10 +99,10 @@
 					<view class="iconfont iconcommission flex-center-center">
 					</view>
 					<view class="top">
-						资金管理
+						M币管理
 					</view>
 					<view class="bottom">
-						佣金提现
+						M币提现
 					</view>
 				</view>
 				<view class="row-item uni-flex-item uni-center" @tap="toSalesManagement">
@@ -281,7 +281,7 @@
 			// 资金管理
 			toFundManagement() {
 				uni.navigateTo({
-					url: '../../vipCenter/fund_management'
+					url: '../../vipCenter/mb_transfer'
 				})
 			},
 			// 销售管理

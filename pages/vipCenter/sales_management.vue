@@ -63,12 +63,11 @@
 					<view class="product">
 						商品
 					</view>
-					<view class="balance" @tap="filterFn('balance')">
+					<!-- <view class="balance" @tap="filterFn('balance')">
 						余额
-						<!-- 三角 -->
 						<view class="triangle_border_up" :class="currentFilter=='balance'&&isDesc?'up':''"></view>
 						<view class="triangle_border_down" :class="currentFilter=='balance'&&!isDesc?'down':''"></view>
-					</view>
+					</view> -->
 					<view class="num" @tap="filterFn('num')">
 						数量
 						<!-- 三角 -->
@@ -91,25 +90,25 @@
 				<!-- 内容 -->
 				<view class="table-body uni-flex uni-row" v-for="(item, index) in dataList" :key="index" :class="{'active':index%2 != 0}">
 					<view class="name">
-						{{item.name}}
+						{{item.userName}}
 					</view>
 					<view class="time">
 						{{item.time}}
 					</view>
 					<view class="product">
-						{{item.product}}
+						{{item.goods}}
 					</view>
-					<view class="balance">
+					<!-- <view class="balance">
 						￥{{item.balance}}
-					</view>
+					</view> -->
 					<view class="num">
 						{{item.num}}
 					</view>
 					<view class="money">
-						￥{{item.money}}
+						￥{{item.price}}
 					</view>
 					<view class="score">
-						+{{item.score}}
+						+{{item.comPoint}}
 					</view>
 				</view>
 			</view>
@@ -128,169 +127,9 @@
 	import moment from "moment";
 	import MxDatePicker from "../../components/mx-datepicker/mx-datepicker.vue";
 	import scrollToTop from "../../components/common/scroll-to-top.vue";
-	const dataList = [{
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 787845,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996456,
-					score: 888894
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈娃哈哈娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996576,
-					score: 88889
-				},{
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 787845,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996456,
-					score: 888894
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈娃哈哈娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996,
-					score: 88889
-				}, {
-					name: "张某",
-					time: "2019/04/07 23:23:19",
-					product: "娃哈哈",
-					balance: 7878,
-					num: "5",
-					money: 996576,
-					score: 88889
-				}]
+	import userService from '../../common/userService.js';
 	export default {
-		components:{
+		components: {
 			uniIcon,
 			MxDatePicker,
 			scrollToTop
@@ -327,7 +166,7 @@
 			}
 		},
 		onPageScroll(e) {
-			this.isShowBtn = e.scrollTop >= 216 ? true : false 
+			this.isShowBtn = e.scrollTop >= 216 ? true : false
 		},
 		computed: {
 			disabled() {
@@ -336,9 +175,10 @@
 		},
 		methods: {
 			init() {
-				this.totalTransactions = "45";
-				this.cashTransactions = "23";
-				this.mbTransactions = "22";
+				this.totalTransactions = "0";
+				this.cashTransactions = "0";
+				this.mbTransactions = "0";
+				this.initTime()
 				// 默认查询
 				this.search()
 			},
@@ -393,7 +233,7 @@
 					this.currentFilter = type;
 				} else {
 					this.isDesc = !this.isDesc;
-					
+
 					this.getDataList();
 				}
 
@@ -401,13 +241,36 @@
 
 			},
 			// 获取数据
-			getDataList(){
+			getDataList() {
 				uni.showLoading()
 				this.dataList = [];
-				setTimeout(()=>{
-					this.dataList = dataList;
+				var params = {
+					stime: this.startDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, ""),
+					etime: this.endDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, ""),
+					payModel:this.currentTab=="mb"?"2":"1"
+				}
+				userService.getOrder(params).then(res => {
 					uni.hideLoading();
-				}, 1000)
+					if (res.data.code == 200) {
+						var result = res.data.result
+						this.totalTransactions = result.count+result.mbcount;
+						this.cashTransactions = result.count;
+						this.mbTransactions = result.mbcount;
+						this.dataList = result.data;
+					} else {
+						uni.showToast({
+							icon: "none",
+							title: res.data.msg
+						})
+					}
+
+				}).catch(err => {
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.errMsg
+					})
+				})
 			},
 			touchS(e) {
 				startX = e.mp.changedTouches[0].clientX;
@@ -421,13 +284,6 @@
 						this.scrollLeft = 500;
 					}
 				}
-			},
-			// 添加银行卡
-			add() {
-				// uni.showLoading({})
-				uni.showToast({
-					title: "添加成功"
-				})
 			}
 		},
 		onLoad() {
@@ -538,17 +394,21 @@
 
 		.scrollView {
 			width: 100%;
+
 			.table {
 				width: 1250upx;
 				margin-bottom: 20upx;
+
 				.table-body {
 					width: 100%;
 					height: 80upx;
 					background-color: #fff;
 					color: #666;
+
 					&.active {
 						background-color: #f5f5f5;
 					}
+
 					.name,
 					.time,
 					.product,
@@ -563,31 +423,32 @@
 						padding: 15upx;
 						font-size: 24upx;
 					}
-					
+
 					.name,
 					.time,
 					.product,
 					.balance,
 					.num,
-					.money, {
+					.money,
+						{
 						border-right: 1upx solid #f0f0f0;
 					}
-					
+
 					.time {
 						flex: 0 0 24%;
 						padding-left: 30upx;
 					}
-					
+
 					.name,
 					.product,
 					.balance,
 					.num,
 					.money,
-					.score  {
+					.score {
 						flex: 0 0 12.67%;
 						padding-left: 15upx;
 					}
-					
+
 				}
 
 				.table-header {
@@ -596,6 +457,7 @@
 					background-color: #242424;
 					color: #fff;
 					font-size: 24upx;
+
 					// 边框
 					.name,
 					.time,

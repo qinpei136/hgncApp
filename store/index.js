@@ -16,7 +16,7 @@ const store = new Vuex.Store({
 		// 用户名
 		userName: "秦佩",
 		// 用户等级，分为0,1,2,3,4五个等级
-		userLevel: 1,
+		userLevel: 2,
 		// 用户id
 		userId: "293a8598-739b-4653-9e73-eb869f2b6bdb",
 		// 用户头像
@@ -46,7 +46,7 @@ const store = new Vuex.Store({
 		
 		LOGIN(state, data) {
 		    state.userName = data.userName || 'PY_'+ data.phone;
-			state.userLevel =1// data.tuser.role;
+			state.userLevel = data.tuser.role;
 			state.userId = data.tuser.id;
 			state.userFace = data.tuser.face || '/static/HM-PersonalCenter/face_default.png';
 			state.userPhone = data.tuser.phone;

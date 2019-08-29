@@ -40,7 +40,7 @@
 						<!-- 团队会员 -->
 						<block v-if="currentTab==='member'">
 							<view class="member uni-flex-item uni-flex uni-row uni-text-small text-color-gray">
-								邀请日期： <text class="time">{{item.createTime.substr(0,10)}}</text>
+								邀请日期： <text class="time">{{item.time.substr(0,10)}}</text>
 							</view>
 						</block>
 						<!-- 销售经理 -->
@@ -269,7 +269,15 @@
 		userService.getMyMentor(params).then(res=>{
 			let data = res.data.result;
 			if(data.length > 0) {
-				this.memberList=data
+				for(var i in data)
+				{
+					var obj={}
+					obj.userName=data[i].UserName
+					obj.role=data[i].Role
+					obj.time=data[i].createTime
+					obj.phone=data[i].phone
+					this.memberList.push(obj)
+				}
 			}
 			
 		}).catch(err=>{
@@ -286,7 +294,15 @@
 		userService.getMyCustomer(params).then(res=>{
 			let data = res.data.result;
 			if(data.length > 0) {
-				this.memberList=data
+				for(var i in data)
+				{
+					var obj={}
+					obj.userName=data[i].UserName
+					obj.role=data[i].Role
+					obj.time=data[i].CreateTime
+					obj.phone=data[i].Phone
+					this.memberList.push(obj)
+				}
 			}
 			
 		}).catch(err=>{
@@ -302,7 +318,17 @@
 		userService.getMyManager(params).then(res=>{
 			let data = res.data.result;
 			if(data.length > 0) {
-				this.managerList=data
+				for(var i in data)
+				{
+					var obj={}
+					obj.userName=data[i].user.UserName
+					obj.role=data[i].user.Role
+					obj.time=data[i].user.CreateTime
+					obj.phone=data[i].user.Phone
+					obj.achievement=data[i].sales
+					obj.num=data[i].count
+					this.managerList.push(obj)
+				}
 			}
 			
 		}).catch(err=>{

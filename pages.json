@@ -193,10 +193,16 @@
 // 				"navigationBarTitleText": "会员中心"
 // 			}
 // 		},
+		// {
+		// 	"path": "fund_management",
+		// 	"style": {
+		// 		"navigationBarTitleText": "资金管理"
+		// 	}
+		// },
 		{
-			"path": "fund_management",
+			"path": "mb_transfer",
 			"style": {
-				"navigationBarTitleText": "资金管理"
+				"navigationBarTitleText": "M币管理"
 			}
 		},{
 			"path": "intergral_center",

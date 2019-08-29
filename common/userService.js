@@ -243,7 +243,8 @@ const getMyMentor = function(params) {
 const getMyCustomer = function(params) {
 	let url = vm.$store.state.userId +
 		"?pageIndex=" + params.page +
-		"&pageSize=" + params.pageSize
+		"&pageSize=" + params.pageSize +
+		"&phone=" + params.keyword
 	return vm.$http.get('/api/TUsers/GetMyCustomer/' + url)
 }
 
@@ -256,7 +257,8 @@ const getMyCustomer = function(params) {
 const getMyManager = function(params) {
 	let url = vm.$store.state.userId +
 		"?pageIndex=" + params.page +
-		"&pageSize=" + params.pageSize
+		"&pageSize=" + params.pageSize +
+		"&phone=" + params.keyword
 	return vm.$http.get('/api/TUsers/GetMyManager/' + url)
 }
 
@@ -269,7 +271,8 @@ const getMyManager = function(params) {
 const getMyZongjian = function(params) {
 	let url = vm.$store.state.userId +
 		"?pageIndex=" + params.page +
-		"&pageSize=" + params.pageSize
+		"&pageSize=" + params.pageSize +
+		"&phone=" + params.keyword
 	return vm.$http.get('/api/TUsers/GetMyZongjian/' + url)
 }
 
@@ -318,6 +321,52 @@ const addTShops = function(params) {
 	return vm.$http.post('/api/TShops/PostTShops', data)
 }
 
+/**     
+ * @method 经理业绩查询  
+ * @param {String} userId  用户Id    
+ **/
+const getOrderMange = function() {
+	return vm.$http.get('/api/TOrders/GetOrderMange/' + vm.$store.state.userId)
+}
+
+/**     
+ * @method 经理业绩查询  
+ * @param {String} userId  用户Id
+ * @param {String} stime  开始时间
+ * @param {String} etime 结束时间     
+ **/
+const getOrderMangeBytime = function(params) {
+	let url = vm.$store.state.userId +
+		"?stime=" + params.stime +
+		"&etime=" + params.etime
+	return vm.$http.get('/api/TOrders/GetOrderMangeBytime/' + url)
+}
+
+/**     
+ * @method 销售管理  
+ * @param {String} userId  用户Id
+ * @param {String} stime  开始时间
+ * @param {String} etime 结束时间     
+ **/
+const getOrder = function(params) {
+	let url = vm.$store.state.userId +
+		"?stime=" + params.stime +
+		"&etime=" + params.etime +
+		"&payModel=" + params.payModel
+	return vm.$http.get('/api/TOrders/GetOrder/' + url)
+}
+
+/**     
+ * @method M币提现  
+ * @param {String} mb 提现数量     
+ **/
+const outMB = function(params) {
+	let data = {
+		MB: params.count,
+	}
+	return vm.$http.post('/api/TUsers/OutMB/' + vm.$store.state.userId, data)
+}
+
 const LOGIN_MODULE = {
 	getSms,
 	register,
@@ -351,6 +400,10 @@ const VIPCENTER_MODULE = {
 	getMyManager,
 	getMyZongjian,
 	addTShops,
+	getOrderMange,
+	getOrderMangeBytime,
+	getOrder,
+	outMB,
 	// getMyTeamNum,
 	// getMyTeamPerformancem,
 	// getMyTeamPoint

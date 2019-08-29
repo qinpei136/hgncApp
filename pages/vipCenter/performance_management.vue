@@ -118,6 +118,7 @@
 	} from '@dcloudio/uni-ui';
 	import moment from "moment";
 	import MxDatePicker from "../../components/mx-datepicker/mx-datepicker.vue";
+	import userService from '../../common/userService.js';
 	export default {
 		components: {
 			uniIcon,
@@ -159,17 +160,37 @@
 		},
 		methods: {
 			init() {
-				this.initInfo();
 				this.initTime();
+				this.initInfo();
 			},
 			initInfo(){
-				this.teamSize = 9029;
-				this.totalTurnover = 10299.99;
-				this.todayTurnover = 3456.88;
-				this.todayInvit = 399;
+				userService.getOrderMange().then(res=>{
+					if(res.data.code==200)
+					{
+						var result=res.data.result
+						this.teamSize = result.usercount;
+						this.totalTurnover = result.todayprice;
+						this.todayTurnover = result.price;
+						this.todayInvit = result.todayuser;
+						
+						// 默认搜索
+						this.getdata();
+					}
+					else
+					{
+						uni.showToast({
+							icon:"none",
+							title: res.data.msg
+						})
+					}
+					
+				}).catch(err=>{
+					uni.showToast({
+						icon:"none",
+						title: err.errMsg
+					})
+				})
 				
-				// 默认搜索
-				this.getdata();
 			},
 			// 初始化时间
 			initTime(){
@@ -210,9 +231,33 @@
 				this.getdata();
 			},
 			getdata(){
-				this.totalTurnoverInPeriod = 3230;
-				this.invitNumInPeriod = 240;
-				this.addedScore = 435340;
+				var params={
+					stime:this.startDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, ""),
+					etime:this.endDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "")
+				}
+				userService.getOrderMangeBytime(params).then(res=>{
+					if(res.data.code==200)
+					{
+						var result=res.data.result
+						this.totalTurnoverInPeriod = result.price;
+						this.invitNumInPeriod = result.newuser;
+						this.addedScore = result.newComPoint;
+					}
+					else
+					{
+						uni.showToast({
+							icon:"none",
+							title: res.data.msg
+						})
+					}
+					
+				}).catch(err=>{
+					uni.showToast({
+						icon:"none",
+						title: err.errMsg
+					})
+				})
+				
 			}
 		},
 		onLoad(options) {
