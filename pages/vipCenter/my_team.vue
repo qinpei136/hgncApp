@@ -344,9 +344,18 @@
 			userService.getMyZongjian(params).then(res=>{
 				let data = res.data.result;
 				if(data.length > 0) {
-					this.majordomoList=data
+					for(var i in data)
+					{
+						var obj={}
+						obj.userName=data[i].user.UserName
+						obj.role=data[i].user.Role
+						obj.time=data[i].user.CreateTime
+						obj.phone=data[i].user.Phone
+						obj.achievement=data[i].sales
+						obj.num=data[i].count
+						this.majordomoList.push(obj)
+					}
 				}
-				
 			}).catch(err=>{
 				uni.showToast({
 					icon:"none",
