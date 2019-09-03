@@ -362,6 +362,26 @@ const calc = {
 	}
 };
 
+/**
+ * @method  把图片转换为base64
+ * @param {String} img 图片地址
+ **/
+const getImgBase64 = function(url) {
+	var base64Str=""
+	if(url)
+	{
+		var image = new Image();
+		image.src = url; 
+		var canvas = document.createElement("canvas");  
+		 canvas.width = image.width;  
+		 canvas.height = image.height;  
+		 var ctx = canvas.getContext("2d");  
+		 ctx.drawImage(image, 0, 0, image.width, image.height);  
+		 var ext = image.src.substring(image.src.lastIndexOf(".")+1).toLowerCase();  
+		 var base64Str = canvas.toDataURL("image/"+ext); 
+	}
+	return base64Str;
+}
 
 export default {
 	graceChecker,
@@ -373,5 +393,6 @@ export default {
 	setRefreshMode,
 	BASE_IMAGE_URL,
 	calc,
-	getImageUrl
+	getImageUrl,
+	getImgBase64
 }

@@ -14,12 +14,12 @@
 			<view class="uni-h4 view-title">设置二级密码</view>
 			<view>
 				<view class="view-pwd">
-					<input id="pwd1" type="number" maxlength="1" class="input-pwd" v-model="pwdData.pwd1" @input="nextFocus('pwd2')"/>
-					<input id="pwd2" type="number" maxlength="1" class="input-pwd" v-model="pwdData.pwd2" @input="nextFocus('pwd3')"/>
-					<input id="pwd3" type="number" maxlength="1" class="input-pwd" v-model="pwdData.pwd3" @input="nextFocus('pwd4')"/>
-					<input id="pwd4" type="number" maxlength="1" class="input-pwd" v-model="pwdData.pwd4" @input="nextFocus('pwd5')"/>
-					<input id="pwd5" type="number" maxlength="1" class="input-pwd" v-model="pwdData.pwd5" @input="nextFocus('pwd6')"/>
-					<input id="pwd6" type="number" maxlength="1" class="input-pwd" v-model="pwdData.pwd6"/>
+					<input id="pwd1" type="number" maxlength="1" class="input-pwd" v-model="pwdData.pwd1" @input="nextFocus('pwd2','')"/>
+					<input id="pwd2" type="number" maxlength="1" class="input-pwd" v-model="pwdData.pwd2" @input="nextFocus('pwd3','pwd1')"/>
+					<input id="pwd3" type="number" maxlength="1" class="input-pwd" v-model="pwdData.pwd3" @input="nextFocus('pwd4','pwd2')"/>
+					<input id="pwd4" type="number" maxlength="1" class="input-pwd" v-model="pwdData.pwd4" @input="nextFocus('pwd5','pwd3')"/>
+					<input id="pwd5" type="number" maxlength="1" class="input-pwd" v-model="pwdData.pwd5" @input="nextFocus('pwd6','pwd4')"/>
+					<input id="pwd6" type="number" maxlength="1" class="input-pwd" v-model="pwdData.pwd6" @input="nextFocus('','pwd5')"/>
 				</view>
 			</view>
 	    	<view class="btn-primary">
@@ -100,10 +100,18 @@
 				data[name] = this[dataType][name];
 				return util.graceChecker.check(data, rules);
 			},
-			nextFocus(name){
-				let control=document.getElementById(name)
-				let input=control.getElementsByTagName('input');
-				input[0].focus()
+			nextFocus(nextName,preName){
+				let name=nextName
+				if(event.target.value=="")
+				{
+					name=preName
+				}
+				if(name!="")
+				{
+					let control=document.getElementById(name)
+					let input=control.getElementsByTagName('input');
+					input[0].focus()
+				}
 			},
 			// 重置密码
 			reSetPwd(){

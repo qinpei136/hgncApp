@@ -163,6 +163,8 @@
 				releasedToday: "",
 				// M币钱包
 				myMbScore: "",
+				//认证状态
+				storeOwner:false,
 				// 跳转其他功能页面列表
 				pageList: [{
 						title: '邀请会员',
@@ -231,7 +233,26 @@
 				// 查询今日释放积分
 				this.getReleaseGold();
 				// 判断当前用户是否，已经进行实名认证了
-				
+				this.getUser();
+			},
+			// 获取用户信息
+			getUser(){
+				uni.showLoading()
+				userService.getUser().then(res=>{
+					uni.hideLoading();
+					this.storeOwner = res.data.result.storeOwner;
+					if(this.storeOwner)
+					{
+						this.pageList[2].title="店铺管理"
+						this.pageList[2].extra={}
+					}
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon:"none",
+						title: err.errMsg
+					})
+				})
 			},
 			// 查询今日释放积分
 			getReleaseGold(){
@@ -315,7 +336,7 @@
 					// 实体加盟（我要开店）
 				} else if (data.index === 2) {
 					// 未认证，跳转认证页面;已认证，跳转店铺管理
-					let url = data.item.isShowExtra ? "/pages/vipCenter/authentication" : "/pages/vipCenter/store_management";
+					let url = this.storeOwner ?  "/pages/vipCenter/store_management":"/pages/vipCenter/authentication" ;
 					uni.navigateTo({
 						url: url
 					})

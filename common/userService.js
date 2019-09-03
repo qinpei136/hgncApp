@@ -357,7 +357,37 @@ const getOrder = function(params) {
 }
 
 /**     
- * @method M币提现  
+ * @method 实名认证 
+ * @param {String} Operator 经营者姓名     
+ * @param {String} CardId 身份证号码     
+ * @param {String} ShopName 商家名称     
+ * @param {String} Sex 性别     
+ * @param {String} ShopCertificates1 身份证正面     
+ * @param {String} ShopCertificates2 身份证反面     
+ * @param {String} ShopCertificates3 营业执照     
+ * @param {String} ShopCertificates4 运营委托书     
+ * @param {String} Email 商家地址          
+ * @param {String} ShopAddress 邮箱     
+ **/
+const postTShops1 = function(params) {
+	let data = {
+		UserId: vm.$store.state.userId,
+		Operator: params.Operator,
+		CardId: params.CardId,
+		ShopName: params.ShopName,
+		Sex: params.Sex,
+		ShopCertificates1 : params.ShopCertificates1,
+		ShopCertificates2: params.ShopCertificates2,
+		ShopCertificates3: params.ShopCertificates3,
+		ShopCertificates4: params.ShopCertificates4,
+		Email : params.Email ,
+		ShopAddress: params.ShopAddress
+	}
+	return vm.$http.post('/api/TShops/PostTShops1', data)
+}
+
+/**     
+ * @method 添加店铺  
  * @param {String} mb 提现数量     
  **/
 const outMB = function(params) {
@@ -367,6 +397,22 @@ const outMB = function(params) {
 	return vm.$http.post('/api/TUsers/OutMB/' + vm.$store.state.userId, data)
 }
 
+/**     
+ * @method 获取实名认证信息  
+ * @param {String} userId  用户Id    
+ **/
+const getTShopByUserID = function(params) {
+	return vm.$http.get('/api/TShops/GetTShopByUserID/' + vm.$store.state.userId)
+}
+
+/**     
+ * @method 获取用户信息  
+ * @param {String} userId  用户Id    
+ **/
+const getUser = function(params) {
+	return vm.$http.get('/api/TUsers/GetUser/' + vm.$store.state.userId)
+}
+
 const LOGIN_MODULE = {
 	getSms,
 	register,
@@ -374,6 +420,7 @@ const LOGIN_MODULE = {
 	reSetPwd,
 	logout,
 	setSecondaryPwd,
+	getUser,
 	// getConfigs,
 	// changeBindPhone,
 	// refleshToken
@@ -404,6 +451,8 @@ const VIPCENTER_MODULE = {
 	getOrderMangeBytime,
 	getOrder,
 	outMB,
+	postTShops1,
+	getTShopByUserID,
 	// getMyTeamNum,
 	// getMyTeamPerformancem,
 	// getMyTeamPoint

@@ -1,15 +1,15 @@
 <template name='sun-upimg-new'>
 	<view>
 		<view class="sunsin_picture_list">
-			<view v-for="(item,index) in upload_picture_list" :key="index" class="sunsin_picture_item">
-				<image :src="item.path" mode="aspectFill" :data-idx="index" @click="previewImgs"></image>
-				<text class='del' @click='deleteImg' :data-index="index">×</text>
+			<view class="sunsin_picture_item" v-show="upImgConfig.url!=''">
+				<image :src="upImgConfig.url" mode="aspectFill" @click="previewImgs"></image>
+				<text class='del' @click='deleteImg'>×</text>
 			</view>
 			<view>
-				<view class='sunsin_picture_item'>
-					<view class="sunsin-add-image" @click='chooseImage(imgName)' :style="'background-color:#999'">
+				<view class='sunsin_picture_item' :class="[upImgConfig.url!='' ? 'view-none' : 'view-block']">
+					<view class="sunsin-add-image" @click='chooseImage(upImgConfig.imgName)' :style="'background-color:#999'">
 						<view><text class="icon-cameraadd" :style="'color:#fff'"></text></view>
-						<view class="icon-text" :style="'color:#fff'">{{imgTitle}}</view>
+						<view class="icon-text" :style="'color:#fff'"><text v-show="upImgConfig.required==true"  class="required">*</text>{{upImgConfig.imgTitle}}</view>
 					</view>
 				</view>
 			</view>
@@ -27,21 +27,21 @@
 				img4:"",
 				imgs: [],
 				upload_picture_list: [],
+				childrenMessage:''
 			};
 		},
 		name: 'sun-upimg-new',
 		props: {
-			imgTitle: {
-				type: String,
+			upImgConfig:{
+				type: Object,
 				default: function() {
-					return "添加图片"
+					return {
+					imgTitle:"添加图片",
+					imgName:"img1",
+					required:true,
+					url:"123"
 				}
-			},
-			"imgName":{
-				type: String,
-				default: function() {
-					return "img"
-				},
+				}
 			}
 		},
 		methods: {
@@ -55,14 +55,13 @@
 				puImage(e, this);
 			}
 		}
-
 	}
 
 	// 删除图片
-	const dImage = (e, _this) => {
-		_this.upload_picture_list.splice(e.currentTarget.dataset.index, 1);
-		_this.imgs.splice(e.currentTarget.dataset.index, 1);
-		_this.upload_picture_list = _this.upload_picture_list;
+	const dImage =async (e, _this) => {
+		let name=_this.upImgConfig.imgName
+		_this.upImgConfig.url=""
+		await _this.$emit('onUpImg', {"name":name,"value":""});
 	}
 
 
@@ -76,6 +75,7 @@
 				uni.getImageInfo({
 					src: res.tempFilePaths[0],
 					success:async (img)=> {
+						res.tempFiles[0]['name'] = name;
 						var image = new Image();  
 						image.src = img.path; 
 						var canvas = document.createElement("canvas");  
@@ -85,8 +85,7 @@
 						 ctx.drawImage(image, 0, 0, image.width, image.height);  
 						 var ext = image.src.substring(image.src.lastIndexOf(".")+1).toLowerCase();  
 						 var dataURL = canvas.toDataURL("image/"+ext); 
-						_this.upload_picture_list.push(res.tempFiles[0])
-						_this.imgs = _this.imgs.concat(res.tempFilePaths).slice(0, 1);
+						_this.upImgConfig.url=res.tempFiles[0].path
 					    await _this.$emit('onUpImg', {"name":name,"value":dataURL});
 					    return dataURL;
 						}
@@ -98,8 +97,8 @@
 	// 预览(通用)
 	const puImage = (e, _this) => {
 		uni.previewImage({
-			current: _this.imgs[e.currentTarget.dataset.idx],
-			urls: _this.imgs
+			current: _this.upImgConfig.url,
+			urls: [_this.upImgConfig.url]
 		})
 	}
 </script>
@@ -128,6 +127,10 @@
 			url('//at.alicdn.com/t/font_533566_yfq2d9wdij.svg?t=1545239985831#iconfont') format('svg');
 		/* iOS 4.1- */
 	}
+		.required {
+			color: #f41e28;
+			margin-left: 0;
+		}
 
 	.icon-text {
 		font-size: 28upx;
@@ -175,10 +178,13 @@
 		background-color: #eee;
 		cursor: pointer;
 		border-radius: 10upx;
-		display: flex;
+		display: block;
+		/* display: flex; */
 		justify-content: center;
 		align-items: center;
 		flex-wrap: wrap;
+		
+		text-align: center;
 	}
 
 	.sunsin_picture_item {
@@ -231,5 +237,11 @@
 		height: 160upx;
 		box-shadow: 6upx 6upx 12upx rgba(112, 128, 144, 0.7);
 		border-radius: 15upx;
+	}
+	.view-none{
+		display: none;
+	}
+	.view-block{
+		display: block;
 	}
 </style>
