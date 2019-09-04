@@ -13,7 +13,7 @@
 		<view class="order-list">
 			<block v-if="!hasNoData">
 				<view class="order-list-item" v-for="(item, index) in orderList" :key="index">
-					<view class="title-wrap uni-flex" @tap="toOrderDetail(item.id)">
+					<view class="title-wrap uni-flex" @tap="toOrderDetail(item.orderId)">
 						<view class="iconfont icondianpu uni-inline-item">
 
 						</view>
@@ -26,7 +26,7 @@
 							{{item.statusText}}
 						</view>
 					</view>
-					<view class="order-info uni-flex" @tap="toOrderDetail(item.id)">
+					<view class="order-info uni-flex" @tap="toOrderDetail(item.orderId)">
 						<view class="image uni-inline-item">
 							<image :src="item.imageUrl" mode="aspectFit"></image>
 						</view>
@@ -70,7 +70,7 @@
 		uniNavBar
 	} from '@dcloudio/uni-ui';
 	import _ from "lodash";
-	import service from '../../common/userService.js';
+	import userService from '../../common/userService.js';
 	import util from "../../common/util.js";
 	import noData from "../../components/common/no-data.vue";
 	import { mapMutations } from 'vuex';
@@ -116,7 +116,7 @@
 					pageSize: 10,
 				}
 				uni.showLoading();
-				service.getOrderList(params).then(res => {
+				userService.getOrderList(params).then(res => {
 						uni.hideLoading();
 					if(res.data.code=="200")
 					{

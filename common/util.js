@@ -394,5 +394,5 @@ export default {
 	BASE_IMAGE_URL,
 	calc,
 	getImageUrl,
-	getImgBase64
+	getImgBase64,
 }

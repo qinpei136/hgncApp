@@ -197,7 +197,7 @@
 					title: "加载中"
 				})
 				// 获取用户收获地址列表
-				service.getAddressList(params).then(res=>{
+				userService.getAddressList().then(res=>{
 					uni.hideLoading();
 					let data = res.data.data;
 					if(data.length > 0) {
@@ -226,7 +226,7 @@
 					title: "加载中"
 				})
 				// 获取用户收获地址列表
-				service.getOrderList(params).then(res=>{
+				userService.getOrderList(params).then(res=>{
 					uni.hideLoading();
 					let data = res.data.data.data;
 					if(data.length > 0) {

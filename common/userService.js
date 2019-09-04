@@ -413,6 +413,15 @@ const getUser = function(params) {
 	return vm.$http.get('/api/TUsers/GetUser/' + vm.$store.state.userId)
 }
 
+/**     
+  * @method 根据订单id查询订单详情（批量）  
+  * @param {String} orderId  订单id数组 
+  * @return {promise} 返回一个promise对象     
+  **/
+const getOrderDetail = function(params) {
+	return vm.$http.get('/api/TOrders/GetTOrderDetails/'+ params.ids)
+}
+
 const LOGIN_MODULE = {
 	getSms,
 	register,
@@ -472,7 +481,7 @@ const MINE_MODULE = {
 	getOrderList,
 	// deleteOrder,
 	// receivedOrder,
-	// getOrderDetail,
+	getOrderDetail,
 	// setSecondaryPwd,
 	// changeSecondaryPwd,
 	// forgetSecondaryPwd,

@@ -1,22 +1,17 @@
 <template>
 	<view class="nearby-orderDetail-page">
 		<uni-notice-bar 
-			show-close="true"
 			show-icon="true" 
-			scrollable="true" single="true" 
 			:text="notice">
 		</uni-notice-bar>
 		
 		<view class="order-list">
 			<!-- 店铺名称，订单状态 -->
-			<view class="title-wrap uni-flex bg-white padding-30-lr" @tap="toShopIndex(shopId)">
+			<view class="title-wrap uni-flex bg-white padding-30-lr"> <!-- @tap="toShopIndex(shopId)" -->
 				<view class="iconfont icondianpu uni-inline-item"></view>
 				<view class="title uni-h5 uni-flex-item uni-flex">
 					<view class="name uni-inline-item">
-						{{shopName}}
-					</view>
-					<view class="icon uni-inline-item text-color-gray">
-						<uniIcon type="arrowright" size="18"></uniIcon>
+						{{orderCode}}
 					</view>
 				</view>
 				<view class="order-status uni-inline-item text-color-gray">
@@ -25,31 +20,30 @@
 			</view>
 			
 			<!-- 商品信息 -->
-			<view class="goods-info bg-white padding-30-lr uni-flex">
+			<view v-for="(item,index) in orderList"  :key="index" class="goods-info bg-white padding-30-lr uni-flex">
 				<view class="image uni-inline-item">
-					<image :src="imgUrl" mode="aspectFit"></image>
+					<image :src="item.ImageUrl" mode="aspectFit"></image>
 				</view>
 				<view class="info uni-flex-item uni-flex uni-column">
 					<view class="title-box uni-h5 uni-flex uni-row">
 						<view class="title uni-flex-item">
-							{{goodsTitle}}
-							<text class="num">X{{num}}</text>
+							{{item.Title}}
+							<!-- <text class="num">X{{item.Num}}</text> -->
 						</view>
 
 						<view class="uni-flex-item total-price text-price uni-bold">
-							￥<text>{{goodsPrice}}</text>
+							￥<text>{{item.OrderDetailsPrice}}</text>
 						</view>
 					</view>
 					<view class="tags uni-flex">
 						<view class="tags uni-flex-item uni-text-small text-color-gray">
-							{{tags}}
+							数量:{{item.Num}} &nbsp; 颜色:{{item.StandardDetails}}
 						</view> 
-						<view class="btn uni-inline-item" @tap="toGoodsDetail(goodsId)">
+						<view class="btn uni-inline-item" @tap="toGoodsDetail(item.GoodsId)">
 							<button type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">再来一单</button>
 						</view>
 					</view>
 				</view>
-				
 			</view>
 			
 			<!-- 订单信息 -->
@@ -83,7 +77,7 @@
 		uniIcon,
 		uniNoticeBar
 	} from '@dcloudio/uni-ui';
-	 import service from '../../common/service.js';
+	 import userService from '../../common/userService.js';
 	 import util from "../../common/util.js";
 	export default{
 		components: {
@@ -103,16 +97,8 @@
 				tags: "",
 				// 订单状态码
 				orderStatus: "",
-				// 商品标题
-				goodsTitle: "",
 				// 商品id
 				goodsId: "",
-				// 商品单价
-				goodsPrice: "",
-				// 商品数量
-				num: 1,
-				// 商品图片
-				imgUrl: "",
 				// 订单编号
 				orderCode: "",
 				// 订单时间
@@ -126,7 +112,9 @@
 				// 运费
 				
 				// 实付款
-				actualPayment: ""
+				actualPayment: "",
+				orderList:[],
+				imgDomainImg:""
 				
 			}
 		},
@@ -135,7 +123,6 @@
 		},
 		methods: {
 			init(){
-				
 				this.getOrderDetail();
 			},
 			// 获取订单信息
@@ -144,28 +131,21 @@
 					ids: [this.orderId],
 				}
 				uni.showLoading();
-				service.getOrderDetail(params).then(res => {
+				userService.getOrderDetail(params).then(res => {
 					uni.hideLoading();
-					let data = res.data.data;
-					console.log(data)
+					let data = res.data.result;
 					if (data.length > 0) {
+						this.orderList=res.data.result
+						for(var i in this.orderList)
+							this.orderList[i].ImageUrl=util.getImageUrl(this.orderList[i].ImageUrl)
 						const orderDetail = data[0];
-						this.orderStatus = this.traslateStatus(orderDetail.status);
-						this.goodsTitle = "仿宋代明月石";
-						this.goodsPrice = orderDetail.status;
-						this.subTags = orderDetail.detail;
-						this.num = orderDetail.status;
-						this.imgUrl = util.setImageUrl({
-							type: "goods",
-							goodId: orderDetail.goodsId,
-							imageName: orderDetail.imageUrl
-						})[0].img;
-						this.orderCode = "2348230948230324234";
-						this.orderTime = orderDetail.createTime;
-						this.payType = "支付宝";
-						this.payTime = "2019-04-15 20:20:20";
-						this.totalPrice = "2000";
-						this.actualPayment = "2000";
+						this.orderStatus = this.traslateStatus(orderDetail.Status);
+						this.orderCode = orderDetail.OrderId;
+						this.orderTime = orderDetail.CreateTime;
+						this.payType =this.traslatePayment(orderDetail.Payment) ;
+						this.payTime = orderDetail.PayTime;
+						this.totalPrice = orderDetail.OrderDetailsPrice;
+						this.actualPayment = orderDetail.Price;
 					}
 				}).catch(err => {
 					uni.hideLoading();
@@ -189,18 +169,11 @@
 			},
 			// 需要转化的值
 			traslateStatus(value) {
-				// status订单状态  后台枚举范围 ：
-				// 不传时查询所有订单
-				// 				"0"为待付款，
-				// 				"1"为已付款待发货，
-				// 				"2"为已发货待收货，
-				// 				"d"为确认收货已完成(done)交易成功状态
-				// 				"c"为未付款订单已取消(cancel)状态,
-				// 				"n"为已付款订单取消未退款状态
-				// 				"a"为已付款订单取消已退款状态
-				// 				其中流程已结束的订单状态为 d,c,a
 				let tValue = "";
 				switch (value) {
+					case "a":
+						tValue = "全部";
+						break;
 					case "0":
 						tValue = "待付款";
 						break;
@@ -213,16 +186,23 @@
 					case "d":
 						tValue = "已完成";
 						break;
-					case "c":
-						tValue = "已取消";
+				}
+				return tValue;
+			},
+			traslatePayment(value) {
+				let tValue = "";
+				switch (value) {
+					case "1":
+						tValue = "支付宝";
 						break;
-					case "n":
-						tValue = "退款中";
+					case "2":
+						tValue = "微信";
 						break;
-					case "a":
-						tValue = "已退款";
+					case "3":
+						tValue = "M币";
 						break;
-					default:
+					case "4":
+						tValue = "积分";
 						break;
 				}
 				return tValue;
@@ -261,6 +241,7 @@
 			.goods-info{
 				padding: 30upx;
 				position: relative;
+				border-top:1px solid #f0f0f0;
 				.name{
 					width: 100%;
 					height: 40upx;
@@ -331,4 +312,10 @@
 			background-color: #fff;
 		}
 	}
+	
+	// .uni-noticebar__content-inner{
+	// 	padding-left: 0upx;
+	// 	color: red;
+	// 	white-space: inherit;
+	// }
 </style>
