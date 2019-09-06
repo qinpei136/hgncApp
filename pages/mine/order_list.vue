@@ -46,9 +46,9 @@
 					</view>
 					<view class="btn" style="text-align: right;line-height:1;padding:30upx 0;margin-top:14upx;">
 						<!-- 再来一单 -->
-						<button type="primary" v-if="item.status === 'd'" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;" @tap="toGoodsDetail(item.goodsId)">再来一单</button>
+						<!-- <button type="primary" v-if="item.status === 'd'" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;" @tap="toGoodsDetail(item.GoodsId)">再来一单</button> -->
 						<!-- 确认收货 -->
-						<button type="primary" v-if="item.status === '2'" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;" @tap="confirmHarvest(item.goodsId)">确认收货</button>
+						<button type="primary" v-if="item.status === '2'" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;" @tap="confirmHarvest(item)">确认收货</button>
 						<!-- 去付款 -->
 						<button type="primary" v-if="item.status === '0'" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;" @tap="toPay(item)">去付款</button>
 					</view>
@@ -152,6 +152,27 @@
 					})
 				})
 			},
+			//确认收货
+			putOrderDone(item) {
+				let params = {
+					orderid: item.orderId
+				}
+				uni.showLoading();
+				userService.putOrderDone(params).then(res => {
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: res.data.msg
+					})
+					item.status='d'
+				}).catch(err => {
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.message
+					})
+				})
+			},
 			// 切换选项卡
 			changeTabs(index) {
 				if (this.tabs.current !== index) {
@@ -160,7 +181,6 @@
 					this.page = 1;
 					this.statusParam = this.traslateStatus(this.tabs.current);
 					this.orderList = [];
-					
 					this.getOrderList(this.statusParam);
 				}
 			},
@@ -171,18 +191,18 @@
 				})
 			},
 			// 商品详情
-			toGoodsDetail() {
-				uni.navigateTo({
-					url: "/pages/home/goods_detail"
-				})
-			},
+			// toGoodsDetail() {
+			// 	uni.navigateTo({
+			// 		url: "/pages/home/goods_detail"
+			// 	})
+			// },
 			// 确认收货
-			confirmHarvest(){
+			confirmHarvest(orderId){
 				util.confirm({
 					title: '',
 					content: '是否确认收货',
 					success: () => {
-						console.log(123123123231)
+						this.putOrderDone(orderId)
 					}
 				})
 			},
@@ -206,16 +226,6 @@
 			// 转化status为对应的文字
 			// value-需要转化的值；mode-转化模式：TO-TEXT:状态码转文字，TO-PARAM: tab下标转为查询参数
 			traslateStatus(value, mode) {
-				// status订单状态  后台枚举范围 ：
-				// 不传时查询所有订单
-				// 				"0"为待付款，
-				// 				"1"为已付款待发货，
-				// 				"2"为已发货待收货，
-				// 				"d"为确认收货已完成(done)交易成功状态
-				// 				"c"为未付款订单已取消(cancel)状态,
-				// 				"n"为已付款订单取消未退款状态
-				// 				"a"为已付款订单取消已退款状态
-				// 				其中流程已结束的订单状态为 d,c,a
 				let tValue = "";
 				if (mode === "TO-PARAM" || !mode) {
 					switch (value) {
@@ -259,15 +269,6 @@
 						case "d":
 							tValue = "已完成";
 							break;
-						// case "c":
-						// 	tValue = "已取消";
-						// 	break;
-						// case "n":
-						// 	tValue = "退款中";
-						// 	break;
-						// case "a":
-						// 	tValue = "已退款";
-						// 	break;
 						default:
 							break;
 					}

@@ -279,11 +279,6 @@
 				"navigationBarBackgroundColor": "#ffffff",
 				"navigationBarTextStyle": "black"
 			}
-		},{
-			"path": "store_management",
-			"style": {
-				"navigationBarTitleText": "店铺管理"
-			}
 		}]
 	}, {
 		// 购物车
@@ -352,6 +347,45 @@
 			"path": "address_edit",
 			"style": {
 				"navigationBarTitleText": "地址编辑"
+			}
+		}]
+	}, {
+		// 店铺管理
+		"root": "pages/shop",
+		"pages": [
+		{
+			"path": "store_management",
+			"style": {
+				"navigationBarTitleText": "店铺管理"
+			}
+		},{
+			"path": "shop_management",
+			"style": {
+				"navigationBarTitleText": "店铺管理"
+			}
+		},{
+			"path": "shop_name",
+			"style": {
+				"navigationBarTitleText": "店铺名称",
+				"navigationStyle":"custom"
+			}
+		},{
+			"path": "shop_notice",
+			"style": {
+				"navigationBarTitleText": "店铺公告",
+				"navigationStyle":"custom"
+			}
+		},{
+			"path": "shop_type",
+			"style": {
+				"navigationBarTitleText": "店铺行业",
+				"navigationStyle":"custom"
+			}
+		},{
+			"path": "shop_phone",
+			"style": {
+				"navigationBarTitleText": "客服电话",
+				"navigationStyle":"custom"
 			}
 		}]
 	}],

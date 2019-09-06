@@ -37,7 +37,7 @@
 					</view>
 					<view class="tags uni-flex">
 						<view class="tags uni-flex-item uni-text-small text-color-gray">
-							数量:{{item.Num}} &nbsp; 颜色:{{item.StandardDetails}}
+							数量:{{item.Num}} &nbsp; 规格:{{item.StandardDetails}}
 						</view> 
 						<view class="btn uni-inline-item" @tap="toGoodsDetail(item.GoodsId)">
 							<button type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">再来一单</button>

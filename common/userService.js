@@ -422,6 +422,37 @@ const getOrderDetail = function(params) {
 	return vm.$http.get('/api/TOrders/GetTOrderDetails/'+ params.ids)
 }
 
+/**     
+  * @method 确认收货，完成订单 
+  * @param {String} orderId  订单id 
+  * @return {promise} 返回一个promise对象     
+  **/
+const putOrderDone = function(params) {
+	let data = {
+		orderid: params.orderid,
+	}
+	return vm.$http.put('/api/TOrders/PutTOrder_Done/'+ vm.$store.state.userId,data)
+}
+
+
+/**     
+  * @method 通过用户ID查找店铺 我的店铺  
+  * @param {String} userId  用户Id  
+  * @return {promise} 返回一个promise对象     
+  **/
+const getShopByUserId = function() {
+	return vm.$http.get('/api/TShops/GetTShopByUserID/'+ vm.$store.state.userId)
+}
+
+/**     
+  * @method 修改店铺信息
+  * @param {String} userId  用户Id  
+  * @return {promise} 返回一个promise对象     
+  **/
+const editShop = function(params) {
+	return vm.$http.put('/api/TShops/PutTShops/'+ vm.$store.state.userId,params)
+}
+
 const LOGIN_MODULE = {
 	getSms,
 	register,
@@ -462,9 +493,15 @@ const VIPCENTER_MODULE = {
 	outMB,
 	postTShops1,
 	getTShopByUserID,
+	putOrderDone,
 	// getMyTeamNum,
 	// getMyTeamPerformancem,
 	// getMyTeamPoint
+}
+
+const SHOP_MODULE = {
+	getShopByUserId,
+	editShop,
 }
 // const SHOPCART_MODULE = {
 // 	getCartList,
@@ -493,5 +530,6 @@ export default {
 	// ...NEARBY_MODULE,
 	...VIPCENTER_MODULE,
 	// ...SHOPCART_MODULE,
-	...MINE_MODULE
+	...MINE_MODULE,
+	...SHOP_MODULE
 }
