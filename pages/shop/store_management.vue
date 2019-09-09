@@ -1,10 +1,13 @@
 <template>
 	<!-- 店铺管理 -->
 	<view class="storeManagement">
-		<view class="product">		
+		<view class="product">
 			<view class="image uni-inline-item">
+				<sunUpImg :upImgConfig="upImgConfig" @onUpImg="upImgData" ref="uImage" />
+			</view>		
+			<!-- <view class="image uni-inline-item">
 				<image :src="imgPath" mode="aspectFit"></image>
-			</view>
+			</view> -->
 			<view class="name">{{shopName}}</view>
 <!-- 			<view class="count">{{item.title}}</view>
 			<view class="count">{{item.title}}</view>
@@ -21,15 +24,25 @@
 	import util from "../../common/util.js";
 	import userService from "../../common/userService.js";
 	import myList from "../../components/common/my-list";
+	import sunUpImg from '../../components/sunui-upimg/sunui-upimg-logo.vue'
     export default {
 		components: {
 			uniIcon,
-			myList
+			myList,
+			sunUpImg
 		},
         data() {
             return {
 				//店铺名称
 				shopName:"",
+				//店铺Id
+				id:"",
+				upImgConfig:{
+					imgTitle:"店铺LOGO",
+					imgName:"img",
+					required:false,
+					url:""
+				},
 				//店铺图片
 				imgPath:"/static/img/logo.png",
 				// 跳转其他功能页面列表
@@ -78,9 +91,10 @@
 				if(res.data.code=="200")
 				{
 					let data = res.data.result.tShops;
+					this.id=data.id
 					this.shopName=data.shopName
 					if(data.imgpath)
-						this.imgpath=data.imgpath
+						this.upImgConfig.url=util.getImageUrl(data.imgpath)
 				}
 				
 			}).catch(err => {
@@ -115,7 +129,34 @@
 						url: "/pages/shop/intergral_transfer"
 					})
 				}
-			}
+			},
+			//获取上传图片返回来的数组(Step1)
+			async upImgData(e) {
+				if(e.value)
+				{
+					uni.showLoading();
+					let params={"Id":this.id,"Imgpath":e.value}
+						userService.editShop(params).then(res => {
+						uni.hideLoading();
+						if(res.data.code="200")
+						{
+							this[e.name]=e.value
+						}
+						else{
+							uni.showToast({
+								icon: "none",
+								title: res.data.msg
+							})
+						}
+					}).catch(err => {
+						uni.hideLoading();
+						uni.showToast({
+							icon: "none",
+							title: err.message
+						})
+					})
+				}
+			},
 		},
 		onLoad(e) {
 			this.init()
@@ -135,7 +176,7 @@
 			    background-color: #fff;
 			    margin: auto;
 			    text-align: center;
-			    padding-top: 90upx;
+			    padding-top: 60upx;
 			    padding-bottom: 60upx;
 				
 				.image {
