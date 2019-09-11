@@ -336,7 +336,7 @@
 					// 实体加盟（我要开店）
 				} else if (data.index === 2) {
 					// 未认证，跳转认证页面;已认证，跳转店铺管理
-					let url = this.storeOwner ?  "/pages/shop/store_management":"/pages/vipCenter/authentication" ;
+					let url = this.storeOwner ?  "/pages/vipCenter/store_management":"/pages/vipCenter/authentication" ;
 					uni.navigateTo({
 						url: url
 					})

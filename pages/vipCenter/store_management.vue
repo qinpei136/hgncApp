@@ -5,9 +5,6 @@
 			<view class="image uni-inline-item">
 				<sunUpImg :upImgConfig="upImgConfig" @onUpImg="upImgData" ref="uImage" />
 			</view>		
-			<!-- <view class="image uni-inline-item">
-				<image :src="imgPath" mode="aspectFit"></image>
-			</view> -->
 			<view class="name">{{shopName}}</view>
 <!-- 			<view class="count">{{item.title}}</view>
 			<view class="count">{{item.title}}</view>
@@ -116,7 +113,7 @@
 					// 商品管理
 				} else if (data.index === 1) {
 					uni.navigateTo({
-						url: "/pages/shop/intergral_transfer"
+						url: "/pages/goods/goods_management"
 					})
 					// 订单管理
 				} else if (data.index === 2) {

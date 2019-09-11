@@ -234,6 +234,12 @@
 			"style": {
 				"navigationBarTitleText": "实名认证"
 			}
+		},
+		{
+			"path": "store_management",
+			"style": {
+				"navigationBarTitleText": "店铺管理"
+			}
 		},{
 			"path": "bank_card",
 			"style": {
@@ -352,13 +358,7 @@
 	}, {
 		// 店铺管理
 		"root": "pages/shop",
-		"pages": [
-		{
-			"path": "store_management",
-			"style": {
-				"navigationBarTitleText": "店铺管理"
-			}
-		},{
+		"pages": [{
 			"path": "shop_management",
 			"style": {
 				"navigationBarTitleText": "店铺管理"
@@ -386,6 +386,38 @@
 			"style": {
 				"navigationBarTitleText": "客服电话",
 				"navigationStyle":"custom"
+			}
+		}]
+	}, {
+		// 商品管理
+		"root": "pages/goods",
+		"pages": [
+		{
+			"path": "goods_management",
+			"style": {
+				"navigationBarTitleText": "商品管理"
+			}
+		},
+		{
+			"path": "goods_list",
+			"style": {
+				"navigationBarTitleText": "商品管理",
+				"navigationStyle":"custom"
+			}
+		},{
+			"path": "goods_add",
+			"style": {
+				"navigationBarTitleText": "添加商品"
+			}
+		},{
+			"path": "goods_detail",
+			"style": {
+				"navigationBarTitleText": "商品详情"
+			}
+		},{
+			"path": "goods_type",
+			"style": {
+				"navigationBarTitleText": "分类管理"
 			}
 		}]
 	}],

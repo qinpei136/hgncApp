@@ -453,6 +453,118 @@ const editShop = function(params) {
 	return vm.$http.put('/api/TShops/PutTShops/'+ vm.$store.state.userId,params)
 }
 
+/**     
+  * @method 通过店铺ID查找商品
+  * @param {String} id  店铺Id
+  * @param {int} pageSize  一页显示多少条
+  * @param {int} pageIndex  第几页  
+  * @param {boolean} listing  上下架 bool值 true上架 false下架
+  * @return {promise} 返回一个promise对象     
+  **/
+const getGoodsList = function(params) {
+	let url = params.id +
+		"?pageIndex=" + params.pageIndex +
+		"&pageSize=" + params.pageSize +
+		"&listing=" + params.listing
+	return vm.$http.get('/api/TShopGoods/GetTShopGoods/'+ url)
+}
+
+/**     
+  * @method 修改店铺信息
+  * @param {String} id  商品Id  
+  * @return {promise} 返回一个promise对象     
+  **/
+const putGoodsUp = function(params) {
+	return vm.$http.put('/api/TShopGoods/PutTShopGoodsListing_Up/'+ params.id)
+}
+
+/**     
+  * @method 修改店铺信息
+  * @param {String} id  商品Id  
+  * @return {promise} 返回一个promise对象     
+  **/
+const putGoodsDown = function(params) {
+	return vm.$http.put('/api/TShopGoods/PutTShopGoodsListing_Down/'+ + params.id)
+}
+
+/**     
+  * @method 通过用户ID查找店铺 我的店铺  
+  * @param {String} shopid  店铺Id  
+  * @return {promise} 返回一个promise对象     
+  **/
+const getShopType = function(params) {
+	return vm.$http.get('/api/TShopGoodsTypes/GetTShopType?shopid='+ params.shopId)
+}
+
+/**     
+  * @method 通过商品类型id修改商品类型
+  * @param {String} id  商品类型id
+  * @param {String} TypeName  商品类型名称
+  * @return {promise} 返回一个promise对象     
+  **/
+const updateShopType = function(params) {
+	let data={"typeName":params.typeName}
+	return vm.$http.put('/api/TShopGoodsTypes/PutTShopType/'+ params.id,data)
+}
+
+/**     
+  * @method 添加商品类型
+  * @param {String} shopid  店铺Id 
+  * @param {String} TypeName  商品类型名称
+  * @return {promise} 返回一个promise对象     
+  **/
+const addShopType = function(params) {
+	let data={"shopId":params.shopId,"typeName":params.typeName}
+	return vm.$http.post('/api/TShopGoodsTypes/PostTShopType',data)
+}
+
+/**     
+  * @method 删除商品类型
+  * @param {String} id  商品类型id
+  * @return {promise} 返回一个promise对象     
+  **/
+const delShopType = function(params) {
+	return vm.$http.delete('/api/TShopGoodsTypes/DeleteTShopType/'+ params.id)
+}
+
+/**     
+  * @method 通过商品Id获取商品信息
+  * @param {String} id  商品Id  
+  * @return {promise} 返回一个promise对象     
+  **/
+const getShopGoodById = function(params) {
+	return vm.$http.get('/api/TShopGoods/GetTShopGoodsById/'+ params.id)
+}
+
+/**     
+  * @method 通过商品
+  * @param {String} id  商品id
+  * @param {String} params  店铺信息
+  * @return {promise} 返回一个promise对象     
+  **/
+const updateShopGoods = function(params,id) {
+	return vm.$http.put('/api/TShopGoods/PutTShopGoods1/'+ id,params)
+}
+
+/**     
+  * @method 添加商品类型
+  * @param {String} shopid  店铺Id 
+  * @param {String} params  店铺信息
+  * @return {promise} 返回一个promise对象     
+  **/
+const addShopGoods = function(params) {
+	return vm.$http.post('/api/TShopGoods/PostTShopGoods1',params)
+}
+
+/**     
+  * @method 删除商品
+  * @param {String} id  商品id
+  * @return {promise} 返回一个promise对象     
+  **/
+const delShopGoods = function(params) {
+	return vm.$http.delete('/api/TShopGoods/DeleteTShopGoods/'+ params.id)
+}
+
 const LOGIN_MODULE = {
 	getSms,
 	register,
@@ -503,6 +615,20 @@ const SHOP_MODULE = {
 	getShopByUserId,
 	editShop,
 }
+
+const GOODS_MODULE = {
+	getGoodsList,
+	putGoodsUp,
+	putGoodsDown,
+	getShopType,
+	updateShopType,
+	addShopType,
+	delShopType,
+	getShopGoodById,
+	updateShopGoods,
+	addShopGoods,
+	delShopGoods
+}
 // const SHOPCART_MODULE = {
 // 	getCartList,
 // 	addToCart,
@@ -531,5 +657,6 @@ export default {
 	...VIPCENTER_MODULE,
 	// ...SHOPCART_MODULE,
 	...MINE_MODULE,
-	...SHOP_MODULE
+	...SHOP_MODULE,
+	...GOODS_MODULE
 }
