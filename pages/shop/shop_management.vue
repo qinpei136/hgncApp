@@ -138,28 +138,23 @@
 			},
 			// 点击跳转
 			baseClick(data) {
-				// 店铺Logo
-				if (data.index === 0) {
-					uni.navigateTo({
-						url: "/pages/shop/intergral_transfer"
-					})
 					// 店铺名称
-				} else if (data.index === 1) {
+				if (data.index === 0) {
 					uni.navigateTo({
 						url: "/pages/shop/shop_name"
 					})
 					// 店铺公告
-				} else if (data.index === 2) {
+				} else if (data.index === 1) {
 					uni.navigateTo({
 						url: "/pages/shop/shop_notice"
 					})
 					// 店铺行业
-				}else if (data.index === 3) {
+				}else if (data.index === 2) {
 					uni.navigateTo({
 						url: "/pages/shop/shop_type"
 					})
 					// 客服电话
-				}else if (data.index === 4) {
+				}else if (data.index === 3) {
 					uni.navigateTo({
 						url: "/pages/shop/shop_phone"
 					})

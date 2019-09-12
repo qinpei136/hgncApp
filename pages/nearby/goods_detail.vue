@@ -21,12 +21,12 @@
 					<view class="price-tag uni-flex-item uni-flex">
 						<view class="vPrice">
 							<text class="value uni-text-small">￥{{vPrice}}</text>
-							<text class="tag uni-text-small">会员价</text>
+							<!-- <text class="tag uni-text-small">会员价</text> -->
 						</view>
-						<view class="sPrice">
+						<!-- <view class="sPrice">
 							<text class="value uni-text-small">￥{{sPrice}}</text>
 							<text class="tag uni-text-small">市场价</text>
-						</view>
+						</view> -->
 					</view>
 				</view>
 				<view class="uni-flex-item number-box">
@@ -40,10 +40,10 @@
 			<view class="title uni-h4">
 				商品详情
 			</view>
-			<rich-text :nodes="detailImagesNode"></rich-text>
-			<!-- <view class="image">
-				<image src="/static/img/common/goodDetail.png" mode="widthFix"></image>
-			</view> -->
+			<!-- <rich-text :nodes="detailImagesNode"></rich-text> -->
+			<view class="image">
+				<image :src="detailImg" mode="widthFix"></image>
+			</view>
 		</view>
 		
 		<!-- 底部信息 -->
@@ -52,7 +52,8 @@
 		<view class="goods-footer uni-flex">
 			<view class="cart uni-inline-item">
 				<view class="iconfont iconicon_shoppingcart_nor" @tap="toCart"></view>
-				<uni-badge :text="total_num" type="primary" v-if="total_num - 0 > 0"></uni-badge>
+				<!-- <uni-badge :text="total_num" type="primary" v-if="total_num - 0 > 0"></uni-badge> -->
+				<uni-badge :text="num" type="primary" v-if="num - 0 > 0"></uni-badge>
 			</view>
 			<view class="btn total uni-flex-item">
 				总计：
@@ -74,7 +75,7 @@
 	} from '@dcloudio/uni-ui';
 	import { mapMutations, mapGetters } from 'vuex';
 	import util from '../../common/util.js';
-	import service from '../../common/service.js';
+	import userService from '../../common/userService.js';
 	import share from "../../components/common/share.vue";
 	import customSwiper from "../../components/common/custom-swiper.vue";
 	export default {
@@ -108,27 +109,7 @@
 				// 传给订单的小图片
 				imageUrl: "",
 				// 轮播图
-				flowImages: [{
-						sid: 0,
-						src: '自定义src0',
-						img: '/static/img/login/img_login_bg@3x.png'
-					},
-					{
-						sid: 1,
-						src: '自定义src1',
-						img: './static/img/login/img_login_bg@3x.png'
-					},
-					{
-						sid: 2,
-						src: '自定义src2',
-						img: '/static/img/login/img_login_bg@3x.png'
-					},
-					{
-						sid: 3,
-						src: '自定义src3',
-						img: '/static/img/login/img_login_bg@3x.png'
-					}
-				],
+				flowImages: [],
 				// 分享的内容
 				shareObj:{
 					// 分享链接
@@ -140,6 +121,7 @@
 					// 分享图标
 					strShareImageUrl: ""
 				},
+				"detailImg":""
 			}
 		},
 		computed: {
@@ -151,77 +133,69 @@
 		methods: {
 			...mapMutations(['INIT_ORDER_lIST']),
 			init(){
-				this.name = "阿萨德就好啦跨世纪的";
-				this.details = "alsdkjflasjdfa看是否卡事件返回";
-				this.mPrice = 320;
-				this.vPrice = 200;
-				this.sPrice = 300;
+				// this.name = "阿萨德就好啦跨世纪的";
+				// this.details = "alsdkjflasjdfa看是否卡事件返回";
+				// this.mPrice = 320;
+				// this.vPrice = 200;
+				// this.sPrice = 300;
+				uni.showLoading();
+				let params = {"id": this.id}
+				userService.getShopGoodById(params).then(res=>{
+					uni.hideLoading();
+					if(res.data.code=="200")
+					{
+						let data = res.data.result;
+						this.name = data.title;
+						this.details = data.detail;
+						this.mPrice = data.mb;
+						this.vPrice = data.price;
+						// 配置轮播图片
+						this.imageUrl=util.getImageUrl(data.imageUrl)
+						this.flowImages.push({"id": data.id,"img": this.imageUrl});
+						// 配置图文详情图片
+						this.detailImg = util.getImageUrl(data.detailImages)
+						// 初始化图文详情
+						// this.detailImagesNode = this.initImagesNode(this.detailImages);
+						// 初始化规格相关信息
+						// if(data[0].standard.length > 0) {
+						// 	// 有规格
+						// 	this.specTitle = data[0].standardTitle;
+						// 	this.specList = this.initSpecList(data[0].standard);
+						// 	//  默认选中第一条
+						// 	this.specList[0].selected = true;
+						// 	this.specSelected = {
+						// 		id: this.specList[0].id,
+						// 		title: this.specList[0].title,
+						// 		price: this.specList[0].price,
+						// 		inventory: this.specList[0].inventory,
+						// 		// 配置规格展示图片
+						// 		imageUrl: util.setImageUrl({
+						// 			type: "goods",
+						// 			goodId: this.specList[0].id,
+						// 			imageName: this.specList[0].imageUrl
+						// 		})
+						// 	}
+						// 	} else {
+						// 		// 无规格
+						// 		this.specSelected = {
+						// 			id: "",
+						// 			title: "",
+						// 			price: data[0].price,
+						// 			inventory: data[0].inventory,
+						// 		}
+						// 	}					
+							
+					}
+				}).catch(err=>{
+				console.log(err)
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title:  err.errMsg,
+					})
+				})
+				
 			},
-			// init(id){
-			// 	let ids = [];
-			// 	ids.push(id)
-			// 	uni.showLoading();
-			// 	service.getGoodListById({ids: ids}).then(res=>{
-			// 		uni.hideLoading();
-			// 		let data = res.data.data;
-			// 		if(data.length > 0) {
-			// 			this.id = data[0].id;
-			// 			this.title = data[0].title;
-			// 			this.price = data[0].price;
-			// 			this.detail = data[0].detail;
-			// 			this.pointRate = data[0].pointRate;
-			// 			// 配置轮播图片
-			// 			this.flowImages = util.setImageUrl({
-			// 				type: "goods",
-			// 				goodId: data[0].id,
-			// 				imageName: data[0].flowImages
-			// 			});
-			// 			// 配置图文详情图片
-			// 			this.detailImages = util.setImageUrl({
-			// 				type: "goods",
-			// 				goodId: data[0].id,
-			// 				imageName: data[0].detailImages
-			// 			});
-			// 			// 初始化图文详情
-			// 			this.detailImagesNode = this.initImagesNode(this.detailImages);
-			// 			// 初始化规格相关信息
-			// 			if(data[0].standard.length > 0) {
-			// 				// 有规格
-			// 				this.specTitle = data[0].standardTitle;
-			// 				this.specList = this.initSpecList(data[0].standard);
-			// 				//  默认选中第一条
-			// 				this.specList[0].selected = true;
-			// 				this.specSelected = {
-			// 					id: this.specList[0].id,
-			// 					title: this.specList[0].title,
-			// 					price: this.specList[0].price,
-			// 					inventory: this.specList[0].inventory,
-			// 					// 配置规格展示图片
-			// 					imageUrl: util.setImageUrl({
-			// 						type: "goods",
-			// 						goodId: this.specList[0].id,
-			// 						imageName: this.specList[0].imageUrl
-			// 					})
-			// 				}
-			// 			} else {
-			// 				// 无规格
-			// 				this.specSelected = {
-			// 					id: "",
-			// 					title: "",
-			// 					price: data[0].price,
-			// 					inventory: data[0].inventory,
-			// 				}
-			// 			}
-			// 		}					
-			// 	}).catch(err=>{
-			// 		console.log(err)
-			// 		uni.hideLoading();
-			// 		uni.showToast({
-			// 			icon: "none",
-			// 			title:  err.errMsg,
-			// 		})
-			// 	})
-			// },
 			// 初始化图文详情
 			initImagesNode(images){
 				let imagsNodes = [];
@@ -258,20 +232,36 @@
 			},
 			// 创建订单；
 			creatOrder(){
-				// 同步vuex  
-				let data = {
-					goodsId: this.id,
-					title: this.name,
-					imageUrl: this.imageUrl,
-					num: this.num,
-					price: this.mPrice
-				}
-				// 缓存订单数据
-				this.INIT_ORDER_lIST([data]);
-				// 跳转到支付页面
-				uni.navigateTo({
-					url: `/pages/nearby/order_pay`
-				});
+				let params = [{"ShopGoodsId": this.id,"num": this.num}]
+					uni.showLoading();
+					userService.postShopOrder(params).then(res => {
+					uni.hideLoading();
+					if(res.data.code=="200")
+					{
+						let orderId=res.data.result[0]
+						// 同步vuex
+						let data = {
+							goodsId: this.id,
+							title: this.name,
+							imageUrl: this.imageUrl,
+							num: this.num,
+							price: this.mPrice
+						}
+						// 缓存订单数据
+						this.INIT_ORDER_lIST([data]);
+						// 跳转到支付页面
+						uni.navigateTo({
+							url: `/pages/nearby/order_pay?orderId=`+orderId
+						});
+					}
+				}).catch(err => {
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.errMsg
+					})
+				})
+				
 			},
 		},
 		onNavigationBarButtonTap(e) {
@@ -294,9 +284,8 @@
 			// }
 		},
 		onLoad(e) {
-			console.log(e)
 			this.id = e.id;
-			this.init(this.id);
+			this.init();
 		},
 		
 	}

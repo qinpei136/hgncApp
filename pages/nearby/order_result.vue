@@ -12,7 +12,7 @@
 					请直接到店出示一下二维码
 				</view>
 				<view class="flex-center-center uni-text-small" style="color: #aaa;" v-if="payStatus ==='fail'">
-					请在{{countDown}}内完成付款，否则订单将关闭
+					请在{{expireTime}}内完成付款，否则订单将关闭
 				</view>
 			</view>
 			<view class="bg-bar">
@@ -32,20 +32,20 @@
 					<view class="title uni-inline-item">
 						付款金额
 					</view>
-					<text class="text-price uni-flex uni-flex-item flex-right">￥1500</text>
+					<text class="text-price uni-flex uni-flex-item flex-right">{{total}}</text>
 				</view>
-				<view class="info-item uni-flex">
+				<!-- <view class="info-item uni-flex">
 					<view class="title uni-inline-item">
 						订单总计
 					</view>
 					<text class="text-price uni-flex uni-flex-item flex-right">￥1400</text>
-				</view>
-				<view class="info-item uni-flex">
+				</view> -->
+				<!-- <view class="info-item uni-flex">
 					<view class="title uni-inline-item">
 						优惠减免
 					</view>
 					<text class="text-price uni-flex uni-flex-item flex-right">-￥100</text>
-				</view>
+				</view> -->
 			</view>
 		</view>
 			
@@ -66,7 +66,7 @@
 					</view>
 					<view class="uni-flex-item  uni-flex flex-right">
 						<view class="checkbox uni-inline-item">
-							<radio value="zfb" :checked="payType === 'zfb'" ></radio>
+							<radio value="zfb" :checked="payType === '1'" ></radio>
 						</view>
 					</view>
 				</view>	
@@ -77,7 +77,7 @@
 							<uni-icon type="info" color="blue"></uni-icon>
 						</view>
 						<view class="name uni-inline-item">
-							M币支付（余额664）
+							M币支付（余额{{mBalance}}）
 						</view>
 					</view>
 					<view class="uni-flex-item  uni-flex flex-right">
@@ -114,6 +114,7 @@
 	import util from "../../common/util.js";
 	// 引入二维码生成器
 	import QR from "../../common/utils/wxqrcode.js" // 二维码生成器  
+	import userService from '../../common/userService.js';
 	export default {
 		components: {
 			uniIcon
@@ -121,13 +122,13 @@
 		data(){
 			return {
 				// 交易状态
-				payStatus: "true",
+				payStatus: "fail",
 				icon: "checkmarkempty",
 				title: "交易成功",
 				// 倒计时
 				countDown: "21:30",
 				// 付款方式
-				payType: "zfb",
+				payType: "1",
 				// 积分余额
 				jBalance: 0,
 				// m币余额
@@ -135,7 +136,8 @@
 				// 总价
 				total:0,
 				// 二维码图片
-				img: ""
+				img: "",
+				expireTime:""
 			}
 		},
 		computed: {
@@ -146,12 +148,54 @@
 		methods: {
 			...mapMutations(['SET_PASSWORD_CHECKSTATUS', 'INIT_ORDER_lIST']),
 			init(){
-				this.mBalance = 650;
-				this.total = 505;
 				// 生成二维码
-				this.img = QR.createQrCodeImg('生成的内容', {  
+				this.img = QR.createQrCodeImg(this.orderId, {  
 					 size: parseInt(300)  
 				})  
+				this.getShopOrder()
+				if(this.payStatus!="success")
+				{
+					this.getUser()
+				}
+			},
+			getShopOrder(){
+				uni.showLoading()
+				let params = {"orderId": this.orderId}
+				userService.getShopOrder(params).then(res=>{
+					uni.hideLoading();
+					if(res.data.code=="200")
+					{
+						let data=res.data.result;
+						for(var i in data)
+							this.total+=data[i].price
+						
+						let orderTime=new Date(data[0].orderTime)
+						let expireDate=new Date(orderTime.setMinutes(orderTime.getMinutes() + 60))
+						this.expireTime=expireDate.getHours()+":"+expireDate.getMinutes()
+					}
+					
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon:"none",
+						title: err.errMsg
+					})
+				}) 
+			},
+			// 获取用户信息
+			getUser(){
+				uni.showLoading()
+				userService.getUser().then(res=>{
+					uni.hideLoading();
+					if(res.data.code=="200")
+						this.mBalance=res.data.result.gold
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon:"none",
+						title: err.errMsg
+					})
+				})
 			},
 			// 选择付款方式
 			radioChange(evt) {
@@ -173,12 +217,12 @@
 			// 支付
 			toPay(){
 				// 支付流程
-				if(this.payType === "zfb") {
+				if(this.payType === "1") {
 					// 支付宝支付
 					uni.showToast({
 						title: "支付宝支付"
 					})
-					// this.alipay();			
+					this.alipay();			
 			
 				} else {
 					// 支付宝支付
@@ -187,57 +231,83 @@
 					})
 					this.mbPay();
 				}
-				
-				// this.toResult();
 			},
 			// 支付宝支付
-			alipay(){
-				// 请求后台接口获取订单数据
-				uni.showLoading();
-				service.getorderInfo().then(res=>{
+			alipay(data){
+				uni.showLoading()
+				let params = {"addressId": "0","orderType":"2"}
+				userService.appPay(this.orderId,params).then(res=>{
 					uni.hideLoading();
-					const data = res.data.data;
+					let orderInfo=res.data.orderInfo
 					// 然后调用api，吊起支付宝支付
 					uni.requestPayment({
 						provider: 'alipay',
-						orderInfo: {
-							"dealId": data.dealId,
-							"appKey": data.appKey,
-							"totalAmount": data.totalAmount,
-							"tpOrderId": data.tpOrderId,
-							"dealTitle": data.dealTitle,
-							"rsaSign": data.rsaSign,
-							"bizInfo": data.bizInfo
-						}, //订单数据
+						orderInfo: orderInfo, //订单数据
 						success: function(res) {
-							console.log('success:' + JSON.stringify(res));
+							this.callbackAfterPay();
 						},
 						fail: function(err) {
 							uni.showToast({
-								icon: "none",
-								title:  err.errMsg || err.data.data,
+								icon:"none",
+								title: err.errMsg
 							})
 						}
-					});
+					});	
 				}).catch(err=>{
-					console.log(err)
+					uni.hideLoading();
+					uni.showToast({
+						icon:"none",
+						title: err.errMsg
+					})
+				})
+			},
+			// 支付成功了回调
+			callbackAfterPay(){
+				let parms = {
+					orderId: this.orderId,
+					PayMode: this.payType
+				}
+				uni.showLoading();
+				userService.putPayStatus(parms).then(res=>{
+					uni.hideLoading();
+					this.payStatus="success"
+					this.icon = "checkmarkempty";
+					
+				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
-						title:  err.errMsg ,
+						title: err.errMsg,
 					})
 				})
-				
 			},
 			// M币支付
 			mbPay(){
-				
+				// 调用支付流程
+					uni.showLoading()
+					let params = {"orderId": this.orderId}
+					userService.getShopOrder(params).then(res=>{
+						uni.hideLoading();
+						if(res.data.code=="200")
+						{
+							this.payStatus="success"
+							this.icon = "checkmarkempty";
+						}
+						
+					}).catch(err=>{
+						uni.hideLoading();
+						uni.showToast({
+							icon:"none",
+							title: err.errMsg
+						})
+					})
 			},
 		},
 		onLoad(option) {
 			this.payStatus = option.payStatus;
 			this.title = this.payStatus === "success" ? "付款成功" : "付款失败";
 			this.icon = this.payStatus === "success" ? "checkmarkempty" : "closeempty";
+			this.orderId=option.orderId
 			
 			this.init();
 			// 付款成功
@@ -322,6 +392,7 @@
 					}
 				}
 				.info-item{
+					padding-top:60upx;
 					.title{
 						color: #666;
 						width: 120upx;
@@ -411,6 +482,7 @@
 				height: 84upx;
 				padding: 0 30upx; 
 				box-sizing: border-box;
+				.name{width: 400upx;}
 				.uni-flex-item{
 					border-bottom: 1upx solid #f0f0f0;
 				}

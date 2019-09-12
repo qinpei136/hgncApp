@@ -19,21 +19,24 @@
 				</view>
 			</view>
 		</view>
-		<!-- 优惠券 -->
-		<!-- <view class=" discount uni-flex">
-			<view class="title uni-inline-item">
-				优惠券
-			</view>
-			<view class="uni-flex-item text-price" style="text-align: right;line-height: 88upx;">
-				满99减10
-			</view>
-			<view class="icon-right uni-inline-item">
-				<uni-icon type="arrowright" color="#666"></uni-icon>
-			</view>
-		</view> -->
-		
 		<!-- 订单信息 -->
 		<view class="order-info">
+			<view class="order-info-item uni-flex">
+				<view class="title uni-flex-item">
+					订单编号
+				</view>
+				<view class="info uni-flex-item uni-flex flex-right">
+					{{orderId}}
+				</view>
+			</view>
+			<view class="order-info-item uni-flex">
+				<view class="title uni-flex-item">
+					下单时间
+				</view>
+				<view class="info uni-flex-item uni-flex flex-right">
+					{{createTime}}
+				</view>
+			</view>
 			<view class="order-info-item uni-flex">
 				<view class="title uni-flex-item">
 					发货方式
@@ -50,14 +53,6 @@
 					￥{{totalPrice}}
 				</view>
 			</view>
-			<!-- <view class="order-info-item uni-flex">
-				<view class="title uni-flex-item">
-					活动优惠
-				</view>
-				<view class="uni-flex-item">
-					-￥220
-				</view>
-			</view> -->
 		</view>
 		<!-- 支付方式 -->
 		<view class="pay-type">
@@ -74,7 +69,7 @@
 					</view>
 					<view class="uni-flex-item  uni-flex flex-right">
 						<view class="checkbox uni-inline-item">
-							<radio value="alipay" :checked="payType === 'alipay'" ></radio>
+							<radio value="alipay" :checked="payType === '1'" ></radio>
 						</view>
 					</view>
 				</view>	
@@ -83,7 +78,7 @@
 					<view class="title uni-flex uni-flex-item">
 						<view class="iconfont iconicon_m uni-inline-item"></view>
 						<view class="name uni-inline-item">
-							M币支付（余额{{mBalance}}）
+							M币支付(余额{{mBalance}})
 						</view>
 					</view>
 					<view class="uni-flex-item  uni-flex flex-right">
@@ -101,7 +96,7 @@
 				<text>共计：</text>
 				<text class="text-price">{{totalPrice}}M币</text>
 			</view>
-			<view class="buy  uni-flex-item flex-center-center" @tap="creatOrder">
+			<view class="buy  uni-flex-item flex-center-center" @tap="toPay">
 				去付款
 			</view>
 		</view>
@@ -111,19 +106,20 @@
 <script>
 	import { uniIcon } from '@dcloudio/uni-ui';
 	import { mapState, mapMutations, mapGetters} from 'vuex';
-	import service from '../../common/service.js';
+	import userService from '../../common/userService.js';
 	export default {
 		components: {
 			uniIcon,
 		},
 		data(){
 			return {
+				// 订单id
+				orderId:"",
+				createTime:"",
 				// 支付方式
-				payType: "alipay",
+				payType: "1",
 				// m币余额
 				mBalance: 0,
-				// 订单id
-				orderId: null
 			}
 		},
 		computed: {
@@ -145,7 +141,22 @@
 		},
 		methods: {
 			init(){
-				this.mBalance = 9999;
+				this.getUser()
+			},
+			// 获取用户信息
+			getUser(){
+				uni.showLoading()
+				userService.getUser().then(res=>{
+					uni.hideLoading();
+					if(res.data.code=="200")
+						this.mBalance=res.data.result.gold
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon:"none",
+						title: err.errMsg
+					})
+				})
 			},
 			// 跳转商品详情
 			toDetail(id){
@@ -157,49 +168,10 @@
 			radioChange(evt) {
 				this.payType = evt.detail.value;
 			},
-			// 创建订单
-			creatOrder(){
-				// 支付宝支付不用检验二级密码
-				if(this.payType !== "alipay" && !this.$store.state.isCheckPassword) {
-					this.toSecond();
-					return 
-				} 
-				this.toResult(true);
-				return
-				let goods = [];
-				_.forEach(this.getOrderList, item => {
-					goods.push({
-						goodsId: item.goodsId,
-						num: item.num,
-						price: item.price,
-						detail: item.standardText,
-						imageUrl: item.imageUrl
-					})
-				})
-				let params = {
-					userId: this.userId,
-					goods: goods,
-				}
-				uni.showLoading();
-				service.createOrder(params).then(res=>{
-					uni.hideLoading();
-					let data = res.data.data;
-					console.log(data);
-					this.orderId = data || undefined;
-					// 去支付
-					// this.toPay(data);
-				}).catch(err=>{
-					uni.hideLoading();
-					uni.showToast({
-						icon:"none",
-						title: err.errMsg
-					})
-				})
-			},
 			// 支付
 			toPay(data){
 				// 支付流程
-				if(this.payType === "alipay") {
+				if(this.payType === "1") {
 					// 支付宝支付
 					uni.showToast({
 						title: "支付宝支付"
@@ -215,63 +187,70 @@
 			},
 			// 支付宝支付
 			alipay(data){
-				// 然后调用api，吊起支付宝支付
-				uni.requestPayment({
-					provider: 'alipay',
-					orderInfo: {
-						"dealId": data.dealId,
-						"appKey": data.appKey,
-						"totalAmount": data.totalAmount,
-						"tpOrderId": data.tpOrderId,
-						"dealTitle": data.dealTitle,
-						"rsaSign": data.rsaSign,
-						"bizInfo": data.bizInfo
-					}, //订单数据
-					success: function(res) {
-						console.log('success:' + JSON.stringify(res));
-						this.callbackAfterPay();
-						this.toResult(true);
-					},
-					fail: function(err) {
-// 						uni.showToast({
-// 							icon: "none",
-// 							title:  err.errMsg || err.data.data,
-// 						})
-						this.toResult(false);
-					}
-				});	
+				uni.showLoading()
+				let params = {"addressId": "0","orderType":"2"}
+				userService.appPay(this.orderId,params).then(res=>{
+					uni.hideLoading();
+					let orderInfo=res.data.orderInfo
+					// 然后调用api，吊起支付宝支付
+					uni.requestPayment({
+						provider: 'alipay',
+						orderInfo: orderInfo, //订单数据
+						success: function(res) {
+							console.log('success:' + JSON.stringify(res));
+							this.callbackAfterPay();
+						},
+						fail: function(err) {
+							this.toResult(false);
+						}
+					});	
+				}).catch(err=>{
+					uni.hideLoading();
+					uni.showToast({
+						icon:"none",
+						title: err.errMsg
+					})
+				})
+				
 			},
 			// M币支付
 			mbPay(){
 				// 调用支付流程
-					
-				// 去结果页
-				this.toResult();
+					uni.showLoading()
+					let params = {"orderId": this.orderId}
+					userService.getShopOrder(params).then(res=>{
+						uni.hideLoading();
+						if(res.data.code=="200")
+						{
+							// 去结果页
+							this.toResult("success");
+						}
+						
+					}).catch(err=>{
+						uni.hideLoading();
+						uni.showToast({
+							icon:"none",
+							title: err.errMsg
+						})
+					})
 			},
 			// 支付成功了回调
 			callbackAfterPay(){
 				let parms = {
 					orderId: this.orderId,
-					payment: this.payType
+					PayMode: this.payType
 				}
 				uni.showLoading();
-				service.callbackAfterPay().then(res=>{
+				userService.putPayStatus(parms).then(res=>{
 					uni.hideLoading();
-					const data = res.data.data;
+					this.toResult(true);
 					
 				}).catch(err=>{
-					console.log(err)
 					uni.hideLoading();
 					uni.showToast({
 						icon: "none",
 						title: err.errMsg,
 					})
-				})
-			},
-			// 去二级密码页面
-			toSecond(){
-				uni.navigateTo({
-					url: "/pages/mine/gesture_lock?mode=check"
 				})
 			},
 			// 支付结果
@@ -290,7 +269,9 @@
 				});
 			}
 		},
-		onLoad() {
+		onLoad(e) {
+			this.orderId=e.orderId
+			this.createTime=new Date().toLocaleDateString()
 			this.init();
 		}
 	}
@@ -377,6 +358,7 @@
 				height: 84upx;
 				padding: 0 30upx; 
 				box-sizing: border-box;
+				.name{width: 400upx;}
 				.iconfont{
 					margin-right: 10upx;
 				}

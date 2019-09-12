@@ -565,6 +565,79 @@ const delShopGoods = function(params) {
 	return vm.$http.delete('/api/TShopGoods/DeleteTShopGoods/'+ params.id)
 }
 
+/**     
+  * @method 获取附近店铺
+  * @param {String} lon  经度
+  * @param {String} lat  纬度 
+  * @return {promise} 返回一个promise对象     
+  **/
+const getNearShop = function(params) {
+	var url="?lon="+params.lon+"&lat="+params.lat
+	return vm.$http.get('/api/TShops/GetNearShop'+url)
+}
+
+/**     
+  * @method 通过店铺ID查找所有上架商品
+  * @param {String} shopId  店铺Id
+  * @return {promise} 返回一个promise对象     
+  **/
+const getAllShopGoods = function(params) {
+	return vm.$http.get('/api/TShopGoods/GetAllTShopGoods/'+ params.shopId)
+}
+
+/**     
+  * @method 添加订单
+  * @param {String} userId  用户Id
+  * @param {String} ShopGoodsId  商品Id
+  * @param {String} num  数量
+  * @return {promise} 返回一个promise对象     
+  **/
+const postShopOrder = function(params) {
+	return vm.$http.post('/api/TShopOrders/PostTShopOrder/'+ vm.$store.state.userId,JSON.stringify(params))
+}
+
+
+/**     
+  * @method 生成支付宝订单
+  * @param {String} userId  用户Id
+  * @param {String} ShopGoodsId  商品Id
+  * @param {String} num  数量
+  * @return {promise} 返回一个promise对象     
+  **/
+const appPay = function(orderId,params) {
+	return vm.$http.post('/api/Alipay/AppPay/'+ orderId ,params )
+}
+
+/**     
+  * @method 生成支付宝订单
+  * @param {String} userId  用户Id
+  * @param {String} ShopGoodsId  商品Id
+  * @param {String} num  数量
+  * @return {promise} 返回一个promise对象     
+  **/
+const mbPay = function(params) {
+	return vm.$http.put('/api/TUsers/PayShopMB/'+ vm.$store.state.userId ,params )
+}
+
+/**     
+  * @method 生成支付宝订单
+  * @param {String} orderId  订单Id
+  * @return {promise} 返回一个promise对象     
+  **/
+const getShopOrder = function(params) {
+	return vm.$http.get('/api/TShopOrders/GetTShopOrder/'+ params.orderId )
+}
+
+/**     
+  * @method 通过ID修改订单支付状态 已支付
+  * @param {String}  orderId  订单Id
+  * @return {promise} 返回一个promise对象     
+  **/
+const putPayStatus = function(params) {
+	let data={"PayMode":params.PayMode}
+	return vm.$http.put('/api/TShopOrders/PutTShopOrderPayStatus/'+ params.orderId,data )
+}
+
 const LOGIN_MODULE = {
 	getSms,
 	register,
@@ -588,7 +661,12 @@ const LOGIN_MODULE = {
 // 	getGoodListByTopClassType
 // }
 const NEARBY_MODULE = {
-
+	getNearShop,
+	getAllShopGoods,
+	postShopOrder,
+	appPay,
+	mbPay,
+	getShopOrder,
 }
 const VIPCENTER_MODULE = {
 	getReleaseGold,
@@ -653,7 +731,7 @@ const MINE_MODULE = {
 export default {
 	...LOGIN_MODULE,
 	// ...HOME_MODULE,
-	// ...NEARBY_MODULE,
+	...NEARBY_MODULE,
 	...VIPCENTER_MODULE,
 	// ...SHOPCART_MODULE,
 	...MINE_MODULE,

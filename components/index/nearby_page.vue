@@ -42,25 +42,28 @@
 				<view class="uni-h4">
 					附近热店
 				</view>
-				<view class="shop-list flex-center-center" v-for="(item, index) in shopList" :key="index" @tap="toShopIndex(item.id)">
+				<view class="shop-list flex-center-center" v-for="(item, index) in shopList" :key="index" @tap="toShopIndex(item.shopId,item.distance)">
 					<view class="img">
-						<image :src="item.img" mode="aspectFit" style="opacity: 0.1;"></image>
+						<image :src="item.imgpath" mode="aspectFit" style="opacity: 0.1;"></image>
 					</view>
 					<view class="info">
 						<view class="name">
-							<text>{{item.name}}</text>
+							<text>{{item.shopName}}</text>
 							<text class="distance">{{item.distance}}m</text>
 						</view>
 						<view class="tags">
-							<view class="tag" v-for="(tag, index2) in item.tags" :key="index2">
-								{{item.tag}}
+							<view class="tag">
+								{{item.type}}
 							</view>
+							<!-- <view class="tag" v-for="(tag, index2) in item.tags" :key="index2">
+								{{item.tag}}
+							</view> -->
 						</view>
 						<view class="location uni-flex uni-row" @tap="toMap(item.location)">
 							<view class="icon uni-inline-item">
 								<uni-icon type="location" size="16"></uni-icon>
 							</view>
-							<text class="location uni-flex-item">{{item.cityname}}&nbsp;{{item.adname}}&nbsp;{{item.address}}</text>
+							<text class="location uni-flex-item">{{item.shopAddress}}</text>
 						</view>
 					</view>
 				</view>
@@ -80,27 +83,28 @@
 	//高德SDK
 	import amap from '../../common/SDK/amap-wx.js';
 	import util from "../../common/util.js";
-	var swiperList = [{
-			sid: 0,
-			src: '自定义src0',
-			img: '/static/img/common/banner1.jpg',
-		},
-		{
-			sid: 1,
-			src: '自定义src1',
-			img: '/static/img/common/banner2.jpg'
-		},
-		{
-			sid: 2,
-			src: '自定义src2',
-			img: '/static/img/common/banner3.jpg'
-		},
-		{
-			sid: 3,
-			src: '自定义src3',
-			img: '/static/img/common/banner4.jpg'
-		}
-	]
+	import userService from "../../common/userService.js";
+	// var swiperList = [{
+	// 		sid: 0,
+	// 		src: '自定义src0',
+	// 		img: '/static/img/common/banner1.jpg',
+	// 	},
+	// 	{
+	// 		sid: 1,
+	// 		src: '自定义src1',
+	// 		img: '/static/img/common/banner2.jpg'
+	// 	},
+	// 	{
+	// 		sid: 2,
+	// 		src: '自定义src2',
+	// 		img: '/static/img/common/banner3.jpg'
+	// 	},
+	// 	{
+	// 		sid: 3,
+	// 		src: '自定义src3',
+	// 		img: '/static/img/common/banner4.jpg'
+	// 	}
+	// ]
 	export default {
 		components: {
 			uniIcon,
@@ -113,6 +117,8 @@
 				// 底部导航类型 SHOP-探店，ORDER-订单
 				markers: [],
 				shopList: [],
+				lon:"39.905829",
+				lat:"116.478675",
 				picker: {
 					mode: 'multiLinkageSelector',
 					deepLength: 2, // 几级联动
@@ -137,7 +143,6 @@
 				const offset = uni.getSystemInfoSync().statusBarHeight + 100 + 126;
 				util.setRefreshMode(true, offset);
 				// #endif
-				this.swiperList = swiperList;
 				this.getPosition();
 			},
 			// 自定义方法刷新，在index.vue首页文件中调用
@@ -157,30 +162,38 @@
 				this.amapPlugin.getRegeo({
 					success: data => {
 						this.picker.pickerText = data[0].name;
-						// this.picker.pickerText = data[0].regeocodeData.addressComponent.city.replace(/市/g, ''); //把"市"去掉
+						this.lon=data[0].longitude
+						this.lat=data[0].latitude
+						this.getNearShop()
 					}
 				});
-				this.amapPlugin.getPoiAround({
-					success: (data) => {
-						//成功回调
-						this.shopList = data.poisData;
-						console.log("data:" + JSON.stringify(this.shopList));
-						_.forEach(this.shopList, item => {
-							item.img = '/static/img/logo.png',
-							item.tags = item.type.split(";");
-						})
-						uni.hideLoading()
-					},
-					fail: (info) => {
-						//失败回调
-						uni.hideLoading()
-						console.log("info", info)
+			},
+			getNearShop() {
+					let params = {"lon": this.lon,"lat": this.lat}
+					uni.showLoading();
+					userService.getNearShop(params).then(res => {
+					uni.hideLoading();
+					if(res.data.code=="200")
+					{
+						let data=res.data.result
+						for(let i in data)
+						{
+							data[i].imgpath = util.getImageUrl(data[i].imgpath)
+							this.swiperList.push({id: data[i].shopId,img: data[i].imgpath,distance:data[i].distance})
+						}
+						this.shopList=data
 					}
+				}).catch(err => {
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.errMsg
+					})
 				})
 			},
 			//轮播图预览
 			toSwiper(e) {
-				this.toShopIndex(e.id);
+				this.toShopIndex(e.id,e.distance);
 			},
 			// 二级联动
 			showPicker() {
@@ -216,9 +229,9 @@
 				})
 			},
 			// 店铺首页
-			toShopIndex(id){
+			toShopIndex(id,distance){
 				uni.navigateTo({
-					url: `/pages/nearby/shop_index?id=${id}`
+					url: `/pages/nearby/shop_index?id=${id}&distance=${distance}`
 				})
 			},
 			// 跳转地图

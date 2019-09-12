@@ -45,7 +45,7 @@
 					店铺商品
 				</view>
 				<view class="goodsList">
-					<view class="good" v-for="(item, index) in goodsList" :key="index" @tap="toGoodsDetail(item.id)">
+					<view class="good" v-for="(item, index) in goodsList" :key="index" @tap="toGoodsDetail(item.goods_id)">
 						<view class="uni-media-list-logo">
 							<image class="image" lazy-load :src="item.img" />
 						</view>
@@ -76,66 +76,9 @@
 <script>
 	import customSwiper from "../../components/common/custom-swiper.vue";
 	import share from "../../components/common/share.vue";
-	import service from '../../common/service.js';
+	import userService from "../../common/userService.js";
 	import util from '../../common/util.js';
-	const swiperList = [{
-			sid: 0,
-			src: '自定义src0',
-			img: '/static/img/common/banner1.jpg',
-		},
-		{
-			sid: 1,
-			src: '自定义src1',
-			img: '/static/img/common/banner2.jpg'
-		},
-		{
-			sid: 2,
-			src: '自定义src2',
-			img: '/static/img/common/banner3.jpg'
-		},
-		{
-			sid: 3,
-			src: '自定义src3',
-			img: '/static/img/common/banner4.jpg'
-		}
-	];
-	const tpl = {
-		data0: {
-			goods_id: 0,
-			img: '/static/img/common/good1.jpg',
-			name: '老街口-红糖麻花500g/袋',
-			price: '￥58',
-			slogan: '1096人付款'
-		},
-		data1: {
-			goods_id: 1,
-			img: '/static/img/common/good2.jpg',
-			name: '阿玛熊红豆薏米粉480g熟早餐五谷核桃黑豆粉牛奶燕麦熟早餐五谷核桃黑豆粉牛奶燕麦',
-			price: '￥68',
-			slogan: '686人付款'
-		},
-		data2: {
-			goods_id: 2,
-			img: '/static/img/common/good3.jpg',
-			name: '刘涛推荐负离子乳胶枕，享有氧睡眠',
-			price: '￥368',
-			slogan: '1234人付款'
-		},
-		data3: {
-			goods_id: 3,
-			img: '/static/img/common/good4.jpg',
-			name: '阿迪达斯SUPERSTAR金标贝壳头小白鞋',
-			price: '￥668',
-			slogan: '678人付款'
-		},
-		data4: {
-			goods_id: 4,
-			img: '/static/img/common/good5.jpg',
-			name: '【第二件半价】雅思嘉猴头菇饼干整箱750g 早餐休闲零食',
-			price: '￥218',
-			slogan: '52244人付款'	
-		}
-	};
+	
 	
 	export default {
 		components: {
@@ -144,6 +87,7 @@
 		},
 		data() {
 			return {
+				shopId:"",
 				// 轮播图
 				flowImages: [],
 				// 店铺名称
@@ -178,16 +122,43 @@
 				this.getShopInfo();
 			},
 			// 获取店铺信息
-			getShopInfo(){
-				this.flowImages = swiperList;
-				this.name = "无印良品（群光城店）";
-				this.tags = ["居家日用", "简约风格"];
-				this.address = "武昌区徐东大街120号群光城2层";
-				this.distance = 0.6;
-				this.telphone = "13554012597";
-				this.goodsList = tpl;
-				this.detail = "撒发卡机乐山大佛接口了哪些操作，莫阿斯蒂芬群殴而我却侮辱可视对讲阿拉山口的激发了。三大框架分离式的空间法兰。收到了就分手砥砺奋进圣诞快乐。圣诞快乐副驾驶的六块腹肌收到了科技公司老大哥。考过了数据格式蝶恋蜂狂估计是的联发科。生当复来归加上了大富科技公司的"
+			getShopInfo() {
+				let params = {"shopId": this.shopId}
+				uni.showLoading();
+				userService.getAllShopGoods(params).then(res => {
+					uni.hideLoading();
+					if(res.data.code=="200")
+					{
+						let shop=res.data.result.tShop
+						let goods=res.data.result.tShopGoods
+						// this.flowImages = swiperList;
+						this.name =shop.shopName;
+						this.tags = [shop.type];
+						this.address = shop.shopAddress;
+						this.telphone = shop.phone;
+						this.detail =shop.shopNotice
+						for(var i in goods)
+						{
+							let imgUrl=util.getImageUrl(goods[i].imageUrl)
+							this.goodsList.push({
+								"goods_id": goods[i].id,
+								"img": imgUrl,
+								"name": goods[i].title,
+								"price": goods[i].price
+							})
+							
+							this.flowImages.push({"id": goods[i].id,"img": imgUrl})
+						}
+				}
+				}).catch(err => {
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.errMsg
+					})
+				})
 			},
+			
 			//轮播图预览
 			toSwiper(e) {
 				uni.previewImage({
@@ -244,7 +215,9 @@
 				}
 			// }
 		},
-		onLoad() {
+		onLoad(option) {
+			this.shopId = option.id;
+			this.distance = option.distance;
 			this.init();
 		}
 	}
