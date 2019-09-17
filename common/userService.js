@@ -98,6 +98,7 @@ const logout = function(params) {
 const setSecondaryPwd = function(params) {
 	let data = {
 		id: params.id,
+		phone:params.phone,
 		SecondaryPwd: params.pwd
 	}
 	return vm.$http.put('/api/TUsers/PutTUserSecondaryPwd/' + params.code, data)
@@ -139,6 +140,7 @@ const editAddress = function(params) {
 			city: params.city,
 			region: params.region,
 			phone: params.phone,
+			detail:params.detail,
 			Default: params.default || false
 		}
 	} else {

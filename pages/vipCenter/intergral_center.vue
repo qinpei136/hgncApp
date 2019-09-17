@@ -174,7 +174,7 @@
 				// 数据列表
 				dataList: [],
 				page: 1,
-				pageSize: 10
+				pageSize: 5
 			}
 		},
 		onPageScroll(e) {
@@ -240,6 +240,7 @@
 			// 
 			changeTab(tab){
 				this.currentTab = tab;
+				this.dataList=[]
 				this.getDataList();
 			},
 			// 查询
@@ -247,6 +248,8 @@
 				// 结束时间不早于开始时间
 				let start = this.startDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
 				let end = this.endDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
+				this.page=1;
+				this.dataList=[]
 				if(moment(end).isBefore(start)) {
 					uni.showToast({
 						icon: "none",
@@ -280,9 +283,18 @@
 						{
 							data[i].addcomPoint=data[i].addgold
 							data[i].comPoint=data[i].gold
+							data[i].createTime=new Date(data[i].createTime).toLocaleDateString()
+							this.dataList.push(data[i])
 						}
 					}
-					this.dataList=data
+					else{
+						for(var i in data)
+						{
+							data[i].createTime=new Date(data[i].createTime).toLocaleDateString()
+							this.dataList.push(data[i])
+						}
+					}
+					// this.dataList=data
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({

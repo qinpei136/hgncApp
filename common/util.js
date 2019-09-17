@@ -1,6 +1,6 @@
 const BASE_IMAGE_URL = 'https://images.maiyidesan.cn/'
 const BASE_IMAGE_URL_NO_SLASH = 'https://images.maiyidesan.cn'
-const BASE_URL = 'http://server.maiyidesan.cn/v1/api/'
+//const BASE_URL = 'http://server.maiyidesan.cn/v1/api/'
 const domainImg="https://yymall.maiyidesan.cn/YYSYS"
 /**  
  * @Title: util.js    

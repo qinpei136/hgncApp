@@ -202,6 +202,7 @@
 				let userinfo = uni.getStorageSync('USERS_INFO')
 				const parms = {
 					id: userinfo.tuser.id,
+					phone: userinfo.tuser.phone,
 					pwd: this.pwdData.pwd1+this.pwdData.pwd2+this.pwdData.pwd3+this.pwdData.pwd4+this.pwdData.pwd5+this.pwdData.pwd6,
 					code: this.pwdData.code,
 				}
@@ -211,7 +212,7 @@
 					if(res.data.code === 200) {
 						util.alert({
 							title:'密码管理',
-							content: res.data.data, 
+							content: "设置成功", 
 							success: () => {
 								uni.navigateBack()
 							} 

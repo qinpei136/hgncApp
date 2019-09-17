@@ -144,7 +144,7 @@
 						this.orderTime = orderDetail.CreateTime;
 						this.payType =this.traslatePayment(orderDetail.Payment) ;
 						this.payTime = orderDetail.PayTime;
-						this.totalPrice = orderDetail.OrderDetailsPrice;
+						this.totalPrice = orderDetail.Price;
 						this.actualPayment = orderDetail.Price;
 					}
 				}).catch(err => {

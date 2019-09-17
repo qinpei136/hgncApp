@@ -16,10 +16,10 @@ import bottomInfo from './components/global/bottom_info.vue';
 // http.config.baseUrl = "http://10.90.131.120:7002";
 
 // #ifdef MP-WEIXIN
-http.config.baseUrl = "http://server.maiyidesan.cn/";
+http.config.baseUrl = "https://yymall.maiyidesan.cn";
 // #endif
 /* #ifdef APP-PLUS */
-http.config.baseUrl = "http://server.maiyidesan.cn/";
+http.config.baseUrl = "https://yymall.maiyidesan.cn";
 /* #endif */
 
 // //设置请求前拦截器

@@ -149,7 +149,7 @@
 						// uni.setStorageSync('USERS_INFO', userinfo);
 						this.num=""
 						uni.showToast({
-							title:  "提现成功",
+							title:  "提现申请成功",
 						})
 					}
 					else

@@ -286,11 +286,10 @@
 					
 				}).catch((err) => {
 					// 请求失败
-					console.log(err)
 					uni.hideLoading();
 					uni.showToast({
 						icon: 'none',
-						title: err.message,
+						title: err.errMsg,
 					});
 					return;
 				})
