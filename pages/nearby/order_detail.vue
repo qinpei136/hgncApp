@@ -1,22 +1,17 @@
 <template>
 	<view class="nearby-orderDetail-page">
 		<uni-notice-bar 
-			show-close="true"
 			show-icon="true" 
-			scrollable="true" single="true" 
 			:text="notice">
 		</uni-notice-bar>
 		
 		<view class="order-list">
 			<!-- 店铺名称，订单状态 -->
-			<view class="title-wrap uni-flex bg-white padding-30-lr" @tap="toShopIndex(shopId)">
+			<view class="title-wrap uni-flex bg-white padding-30-lr"> <!-- @tap="toShopIndex(shopId)" -->
 				<view class="iconfont icondianpu uni-inline-item"></view>
 				<view class="title uni-h5 uni-flex-item uni-flex">
 					<view class="name uni-inline-item">
-						{{shopName}}
-					</view>
-					<view class="icon uni-inline-item text-color-gray">
-						<uniIcon type="arrowright" size="18"></uniIcon>
+						{{orderCode}}
 					</view>
 				</view>
 				<view class="order-status uni-inline-item text-color-gray">
@@ -25,31 +20,30 @@
 			</view>
 			
 			<!-- 商品信息 -->
-			<view class="goods-info bg-white padding-30-lr uni-flex">
+			<view v-for="(item,index) in orderList"  :key="index" class="goods-info bg-white padding-30-lr uni-flex">
 				<view class="image uni-inline-item">
-					<image :src="imgUrl" mode="aspectFit"></image>
+					<image :src="item.ImageUrl" mode="aspectFit"></image>
 				</view>
 				<view class="info uni-flex-item uni-flex uni-column">
 					<view class="title-box uni-h5 uni-flex uni-row">
 						<view class="title uni-flex-item">
-							{{goodsTitle}}
-							<text class="num">X{{num}}</text>
+							{{item.Title}}
+							<!-- <text class="num">X{{item.Num}}</text> -->
 						</view>
 
 						<view class="uni-flex-item total-price text-price uni-bold">
-							￥<text>{{goodsPrice}}</text>
+							￥<text>{{item.price}}</text>
 						</view>
 					</view>
 					<view class="tags uni-flex">
 						<view class="tags uni-flex-item uni-text-small text-color-gray">
-							{{tags}}
+							数量:{{item.orderDetailsNum}}<!-- &nbsp; 规格:{{item.StandardDetails}} -->
 						</view> 
-						<view class="btn uni-inline-item" @tap="toGoodsDetail(goodsId)">
+						<view class="btn uni-inline-item" @tap="toGoodsDetail(item.orderDetailsId)">
 							<button type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">再来一单</button>
 						</view>
 					</view>
 				</view>
-				
 			</view>
 			
 			<!-- 订单信息 -->
@@ -82,7 +76,9 @@
 	import {
 		uniIcon,
 		uniNoticeBar
-	} from '@dcloudio/uni-ui'; 
+	} from '@dcloudio/uni-ui';
+	 import userService from '../../common/userService.js';
+	 import util from "../../common/util.js";
 	export default{
 		components: {
 			uniIcon,
@@ -90,24 +86,19 @@
 		},
 		data() {
 			return {
+				// 订单id
+				orderId: "",
 				// 提示
 				notice: "为了您的财产安全，不要点击陌生连接，不要向任何人透露银行卡或验证码信息，谨防诈骗！",
 				// 商店名称
 				shopName: "",
 				// 商店id
 				shopId: "",
+				tags: "",
 				// 订单状态码
-				status: "",
-				// 商品标题
-				goodsTitle: "",
+				orderStatus: "",
 				// 商品id
 				goodsId: "",
-				// 商品单价
-				goodsPrice: "",
-				// 商品数量
-				num: 1,
-				// 商品图片
-				imgUrl: "",
 				// 订单编号
 				orderCode: "",
 				// 订单时间
@@ -121,44 +112,49 @@
 				// 运费
 				
 				// 实付款
-				actualPayment: ""
+				actualPayment: "",
+				orderList:[],
+				imgDomainImg:""
 				
 			}
 		},
 		computed: {
-			orderStatus() {
-				let status = "";
-				switch(this.status){
-					case 0:
-						status = "已完成"
-						break;
-					case 1:
-						status = "待消费"
-						break;
-					case 2:
-						status = "待付款"
-						break;
-					default:
-						break;
-				}
-				return status 
-			}
+			
 		},
 		methods: {
 			init(){
-				this.shopName = "大仓小碗";
-				this.status = 0;
-				this.goodsTitle = "仿宋代明月石";
-				this.goodsPrice = "2000"
-				this.tags = "颜色：黑色";
-				this.num = 1;
-				this.imgUrl = "/static/img/logo.png";
-				this.orderCode = "2348230948230324234";
-				this.orderTime = "2019-04-15 20:20:20";
-				this.payType = "支付宝";
-				this.payTime = "2019-04-15 20:20:20";
-				this.totalPrice = "2000";
-				this.actualPayment = "2000";
+				this.getOrderDetail();
+			},
+			// 获取订单信息
+			getOrderDetail(){
+				let params = {
+					orderId: this.orderId,
+				}
+				uni.showLoading();
+				userService.getShopOrder(params).then(res => {
+					uni.hideLoading();
+					let data = res.data.result;
+					if (data.length > 0) {
+						this.orderList=res.data.result
+						for(var i in this.orderList)
+							this.orderList[i].ImageUrl=util.getImageUrl(this.orderList[i].orderDetailsImg)
+						const orderDetail = data[0];
+						this.orderStatus = this.traslateStatus(orderDetail.orderStatus);
+						this.orderCode = orderDetail.orderId;
+						this.orderTime = new Date(orderDetail.orderTime).Format("yyyy-MM-dd hh:mm");
+						this.payType =this.traslatePayment(orderDetail.payMode) ;
+						this.payTime = new Date(orderDetail.orderTime).Format("yyyy-MM-dd hh:mm");
+						this.totalPrice = orderDetail.price;
+						this.actualPayment = orderDetail.price;
+						console.info(this.orderList)
+					}
+				}).catch(err => {
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.errMsg
+					})
+				})
 			},
 			// 店铺首页
 			toShopIndex(id){
@@ -171,9 +167,53 @@
 				uni.navigateTo({
 					url: `/pages/nearby/goods_detail?id=${id}`
 				})
+			},
+			// 需要转化的值
+			traslateStatus(value) {
+				let tValue = "";
+				switch (value) {
+					case "a":
+						tValue = "全部";
+						break;
+					case "0":
+						tValue = "待付款";
+						break;
+					case "1":
+						tValue = "待发货";
+						break;
+					case "2":
+						tValue = "待收货";
+						break;
+					case "d":
+						tValue = "已完成";
+						break;
+				}
+				return tValue;
+			},
+			traslatePayment(value) {
+				let tValue = "";
+				switch (value) {
+					case "1":
+						tValue = "支付宝";
+						break;
+					case "2":
+						tValue = "微信";
+						break;
+					case "3":
+						tValue = "M币";
+						break;
+					case "4":
+						tValue = "积分";
+						break;
+					default:
+						tValue = "未支付";
+						break;
+				}
+				return tValue;
 			}
 		},
 		onLoad(e) {
+			this.orderId = e.id;
 			this.init();
 		},
 	}
@@ -205,6 +245,7 @@
 			.goods-info{
 				padding: 30upx;
 				position: relative;
+				border-top:1px solid #f0f0f0;
 				.name{
 					width: 100%;
 					height: 40upx;
@@ -275,4 +316,10 @@
 			background-color: #fff;
 		}
 	}
+	
+	// .uni-noticebar__content-inner{
+	// 	padding-left: 0upx;
+	// 	color: red;
+	// 	white-space: inherit;
+	// }
 </style>

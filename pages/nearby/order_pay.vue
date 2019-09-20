@@ -217,8 +217,8 @@
 			mbPay(){
 				// 调用支付流程
 					uni.showLoading()
-					let params = {"orderId": this.orderId}
-					userService.getShopOrder(params).then(res=>{
+					let params = {"ShopOrderId": this.orderId,"MB":this.totalPrice,"addressId":0}
+					userService.mbPay(params).then(res=>{
 						uni.hideLoading();
 						if(res.data.code=="200")
 						{

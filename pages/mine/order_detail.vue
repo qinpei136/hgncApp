@@ -204,6 +204,9 @@
 					case "4":
 						tValue = "积分";
 						break;
+					default:
+						tValue = "未支付";
+						break;
 				}
 				return tValue;
 			}

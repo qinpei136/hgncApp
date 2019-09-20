@@ -640,6 +640,19 @@ const putPayStatus = function(params) {
 	return vm.$http.put('/api/TShopOrders/PutTShopOrderPayStatus/'+ params.orderId,data )
 }
 
+/**     
+  * @method 通过用户id查询订单
+  * @param {String} status  订单Id
+  * @return {promise} 返回一个promise对象     
+  **/
+const getShopOrderByUserId = function(params) {
+	let url = vm.$store.state.userId +
+		"?pageIndex=" + params.page +
+		"&pageSize=" + params.pageSize +
+		"&status=" + params.status
+	return vm.$http.get('/api/TShopOrders/GetTShopOrder_userid/'+ url )
+}
+
 const LOGIN_MODULE = {
 	getSms,
 	register,
@@ -669,6 +682,7 @@ const NEARBY_MODULE = {
 	appPay,
 	mbPay,
 	getShopOrder,
+	getShopOrderByUserId,
 }
 const VIPCENTER_MODULE = {
 	getReleaseGold,
