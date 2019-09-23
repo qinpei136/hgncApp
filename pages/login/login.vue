@@ -328,19 +328,6 @@
 							checkType: "notnull",
 							name: "code",
 							errorMsg: "短信验证码不能为空"
-						}, {
-							checkType: "same",
-							checkRule: this.registerData.msg,
-							name: "code",
-							errorMsg: "短信验证码不正确"
-						}]
-					}, {
-						name: "expiryTime",
-						rules: [{
-							checkType: "dateless",
-							checkRule: new Date(),
-							name: "expiryTime",
-							errorMsg: "短信验证码已过期"
 						}]
 					}, {
 						name: "password",

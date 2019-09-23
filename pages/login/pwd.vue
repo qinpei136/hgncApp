@@ -205,17 +205,26 @@
 				service.reSetPwd(parms).then(res => {
 					uni.hideLoading();
 					if(res.data.code === 200) {
-						util.alert({
-							title:'重置密码',
-							content: res.data.data, 
-							success: () => {
-								// 跳转至登录页面？把手机号密码带过去？
-// 								uni.redirectTo({
-// 									url: `./login?phone=${this.pwdData.phone}&password=${this.pwdData.password}`
-// 								})	
-								uni.navigateBack()
-							} 
-						})
+						uni.showToast({
+							title: "重置密码成功",
+							success: function(){
+								setTimeout(()=>{
+									// 返回上一级页面
+									uni.navigateBack()
+								},800)
+							}
+						})	
+// 						util.alert({
+// 							title:'重置密码',
+// 							content: res.data.data, 
+// 							success: () => {
+// 								// 跳转至登录页面？把手机号密码带过去？
+// // 								uni.redirectTo({
+// // 									url: `./login?phone=${this.pwdData.phone}&password=${this.pwdData.password}`
+// // 								})	
+// 								uni.navigateBack()
+// 							} 
+// 						})
 					} else {
 						// 登录失败
 						uni.showToast({

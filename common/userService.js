@@ -141,6 +141,7 @@ const editAddress = function(params) {
 			region: params.region,
 			phone: params.phone,
 			detail:params.detail,
+			receiver: params.receiver,
 			Default: params.default || false
 		}
 	} else {

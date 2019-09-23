@@ -164,26 +164,26 @@
 				// M币钱包
 				myMbScore: "",
 				//认证状态
-				storeOwner:false,
+				storeOwner: false,
 				// 跳转其他功能页面列表
 				pageList: [{
 						title: '邀请会员',
 						iconfont: 'iconinvite',
-						extra:{},
+						extra: {},
 						isShowExtra: false,
 						isShowArrow: true,
 					},
 					{
 						title: '积分转让',
 						iconfont: 'icontransfer',
-						extra:{},
+						extra: {},
 						isShowExtra: false,
 						isShowArrow: true,
 					},
 					{
 						title: '实体加盟',
 						iconfont: 'iconjoin',
-						extra:{
+						extra: {
 							text: '需实名认证',
 							color: "#ff8c4f"
 						},
@@ -217,8 +217,8 @@
 				return title;
 			},
 			// 处理手机号加密
-			encryptPhone(){
-				if(this.userPhone){
+			encryptPhone() {
+				if (this.userPhone) {
 					let start = this.userPhone.slice(0, 3);
 					let end = this.userPhone.slice(-4);
 					return `${start}****${end}`;
@@ -228,42 +228,42 @@
 		methods: {
 			init() {
 				let userinfo = uni.getStorageSync('USERS_INFO')
-				this.myScore=userinfo.tuser.comPoint
-				this.myMbScore=userinfo.tuser.gold
 				// 查询今日释放积分
 				this.getReleaseGold();
 				// 判断当前用户是否，已经进行实名认证了
 				this.getUser();
 			},
 			// 获取用户信息
-			getUser(){
+			getUser() {
 				uni.showLoading()
-				userService.getUser().then(res=>{
+				userService.getUser().then(res => {
 					uni.hideLoading();
 					this.storeOwner = res.data.result.storeOwner;
-					if(this.storeOwner)
-					{
-						this.pageList[2].title="店铺管理"
-						this.pageList[2].extra={}
+					if (this.storeOwner) {
+						this.pageList[2].title = "店铺管理"
+						this.pageList[2].extra = {}
 					}
-				}).catch(err=>{
+				}).catch(err => {
 					uni.hideLoading();
 					uni.showToast({
-						icon:"none",
+						icon: "none",
 						title: err.errMsg
 					})
 				})
 			},
 			// 查询今日释放积分
-			getReleaseGold(){
+			getReleaseGold() {
 				uni.showLoading()
-				userService.getReleaseGold().then(res=>{
+				userService.getReleaseGold().then(res => {
 					uni.hideLoading();
-					this.releasedToday = res.data.result || "0.00";
-				}).catch(err=>{
+					let data = res.data.result
+					this.myScore = data.comPoint
+					this.myMbScore = data.gold
+					this.releasedToday = data.todayGold
+				}).catch(err => {
 					uni.hideLoading();
 					uni.showToast({
-						icon:"none",
+						icon: "none",
 						title: err.errMsg
 					})
 				})
@@ -336,7 +336,7 @@
 					// 实体加盟（我要开店）
 				} else if (data.index === 2) {
 					// 未认证，跳转认证页面;已认证，跳转店铺管理
-					let url = this.storeOwner ?  "/pages/vipCenter/store_management":"/pages/vipCenter/authentication" ;
+					let url = this.storeOwner ? "/pages/vipCenter/store_management" : "/pages/vipCenter/authentication";
 					uni.navigateTo({
 						url: url
 					})
@@ -347,12 +347,12 @@
 		created() {
 			// 关闭下拉刷新
 			util.setRefreshMode(false);
-			
+
 			// 初始化
 			this.init()
-			
+
 			// 判断当前用户是否有店铺
-			
+
 		}
 	};
 </script>
@@ -395,6 +395,7 @@
 					height: 136upx;
 					border-radius: 50%;
 					border: 4upx solid #fff;
+
 					image {
 						width: 100%;
 						height: 100%;
@@ -531,7 +532,7 @@
 			}
 		}
 
-		.telphone{
+		.telphone {
 			height: 150upx;
 			margin-bottom: 100upx;
 		}

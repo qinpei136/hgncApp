@@ -156,9 +156,9 @@
 				mbValue: 0,
 				showPicker: false,
 				// 开始时间
-				startDate: '2019年/01月/01日',
+				startDate: '2019-01-01',
 				// 结束时间
-				endDate: '2019年/04月/01日',
+				endDate: '2019-04-01',
 				// 
 				type: 'start',
 				// picker的返回值
@@ -193,8 +193,6 @@
 			init() {
 				// 获取我的积分
 				let userinfo = uni.getStorageSync('USERS_INFO')
-				this.myScore=userinfo.tuser.comPoint
-				this.myMbScore=userinfo.tuser.gold
 				// 获取今日释放积分
 				this.getReleaseGold();
 				// 获取M币钱包
@@ -206,9 +204,9 @@
 				//获取当前时间
 				let now = moment();
 				// 结束时间为当前
-				this.endDate = now.format("YYYY年MM月DD日");
+				this.endDate = now.format("YYYY/MM/DD");
 				// 开始时间为7天前
-				this.startDate = now.subtract(7, 'days').format("YYYY年MM月DD日");
+				this.startDate = now.subtract(7, 'days').format("YYYY/MM/DD");
 			},
 			onShowDatePicker(type) { //显示
 				this.showPicker = true;
@@ -228,7 +226,10 @@
 				uni.showLoading()
 				userService.getReleaseGold().then(res=>{
 					uni.hideLoading();
-					this.releasedToday = res.data.result || "0.00";
+					let data=res.data.result
+					this.myScore=data.comPoint
+					this.myMbScore=data.gold
+					this.releasedToday = data.todayGold
 				}).catch(err=>{
 					uni.hideLoading();
 					uni.showToast({
@@ -246,8 +247,8 @@
 			// 查询
 			search(){
 				// 结束时间不早于开始时间
-				let start = this.startDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
-				let end = this.endDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
+				let start = this.startDate/* .replace(/年/g, "").replace(/月/g, "").replace(/日/g, "") */;
+				let end = this.endDate/* .replace(/年/g, "").replace(/月/g, "").replace(/日/g, "") */;
 				this.page=1;
 				this.dataList=[]
 				if(moment(end).isBefore(start)) {
@@ -263,8 +264,8 @@
 			// 获取积分，M币数据列表
 			getDataList(){
 				uni.showLoading();
-				let start = this.startDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
-				let end = this.endDate.replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "");
+				let start = this.startDate/* .replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "") */;
+				let end = this.endDate/* .replace(/年/g, "-").replace(/月/g, "-").replace(/日/g, "") */;
 				let param = {
 					userId: '6edb5990-5293-11e9-aa84-d307a0d28bbc',
 					isCom: this.currentTab=='jf' ? true: false,
@@ -317,9 +318,9 @@
 			}
 		},
 		onLoad() {
+			this.initTime();
 			this.init();
 			// 
-			this.initTime();
 		}
 	}
 </script>

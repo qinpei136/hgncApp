@@ -22,7 +22,7 @@
 						</view>
 					</view>
 					<view class="order-status uni-inline-item">
-						{{item.status}}
+						{{item.ststus=='0'?'待付款':'待核销'}}
 					</view>
 				</view>
 				<view class="order-info uni-flex" @tap="toOrderDetail(item.shopOrderId)">
@@ -44,7 +44,9 @@
 					</view>
 				</view>
 				<view class="btn" style="text-align: right;line-height:1;padding:30upx;margin-top:14upx;box-sizing: border-box;" @tap="toGoodsDetail(item.goodsId)">
-					<button type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">再来一单</button>
+					<!-- <button v-if='item.status==0' type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">再来一单</button> -->
+					<button v-if='item.ststus==1' type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">去核销</button>
+					<button v-if='item.ststus==0' type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">去付款</button>
 				</view>
 			</view>
 		</view>
