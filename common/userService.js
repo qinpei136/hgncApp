@@ -684,6 +684,7 @@ const NEARBY_MODULE = {
 	mbPay,
 	getShopOrder,
 	getShopOrderByUserId,
+	putPayStatus,
 }
 const VIPCENTER_MODULE = {
 	getReleaseGold,

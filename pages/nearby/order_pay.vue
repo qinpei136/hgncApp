@@ -176,6 +176,7 @@
 					uni.showToast({
 						title: "支付宝支付"
 					})
+					// this.callbackAfterPay()
 					this.alipay(data);
 				} else {
 					// 支付宝支付
@@ -187,21 +188,20 @@
 			},
 			// 支付宝支付
 			alipay(data){
+				let _this=this;
 				uni.showLoading()
 				let params = {"addressId": "0","orderType":"2"}
-				userService.appPay(this.orderId,params).then(res=>{
+				userService.appPay(_this.orderId,params).then(res=>{
 					uni.hideLoading();
 					let orderInfo=res.data.orderInfo
-					// 然后调用api，吊起支付宝支付
 					uni.requestPayment({
 						provider: 'alipay',
 						orderInfo: orderInfo, //订单数据
 						success: function(res) {
-							console.log('success:' + JSON.stringify(res));
-							this.callbackAfterPay();
+							_this.callbackAfterPay();
 						},
 						fail: function(err) {
-							this.toResult(false);
+							_this.toResult(false);
 						}
 					});	
 				}).catch(err=>{

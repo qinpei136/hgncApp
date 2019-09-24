@@ -197,7 +197,7 @@ export default {
 		let _token = {
 			'Auth': uni.getStorageSync('USER_TOKEN') || 'undefined'
 		};
-		options.header = Object.assign({}, options.header, _token)
+		options.header = Object.assign({"Content-Type": "application/json"}, options.header, _token)
 
 		return new Promise((resolve, reject) => {
 			let _config = null

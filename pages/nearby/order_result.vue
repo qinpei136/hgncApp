@@ -11,9 +11,9 @@
 				<view class="flex-center-center uni-text-small" style="color: #aaa;" v-if="payStatus ==='success'">
 					请直接到店出示一下二维码
 				</view>
-				<view class="flex-center-center uni-text-small" style="color: #aaa;" v-if="payStatus ==='fail'">
+				<!-- <view class="flex-center-center uni-text-small" style="color: #aaa;" v-if="payStatus ==='fail'">
 					请在{{expireTime}}内完成付款，否则订单将关闭
-				</view>
+				</view> -->
 			</view>
 			<view class="bg-bar">
 				
@@ -169,7 +169,7 @@
 						for(var i in data)
 							this.total+=data[i].price
 						
-						let orderTime=new Date(data[0].orderTime)
+						let orderTime=new Date(data[0].orderTime.replace(/-/g,'/'))
 						let expireDate=new Date(orderTime.setMinutes(orderTime.getMinutes() + 60))
 						this.expireTime=expireDate.getHours()+":"+expireDate.getMinutes()
 					}
@@ -234,24 +234,21 @@
 			},
 			// 支付宝支付
 			alipay(data){
+				let _this=this;
 				uni.showLoading()
 				let params = {"addressId": "0","orderType":"2"}
-				userService.appPay(this.orderId,params).then(res=>{
+				userService.appPay(_this.orderId,params).then(res=>{
 					uni.hideLoading();
 					let orderInfo=res.data.orderInfo
-					// 然后调用api，吊起支付宝支付
 					uni.requestPayment({
 						provider: 'alipay',
 						orderInfo: orderInfo, //订单数据
 						success: function(res) {
-							this.callbackAfterPay();
+							_this.callbackAfterPay();
 						},
 						fail: function(err) {
-							uni.showToast({
-								icon:"none",
-								title: err.errMsg
-							})
-						}
+							_this.toResult(false);
+						},
 					});	
 				}).catch(err=>{
 					uni.hideLoading();
@@ -270,8 +267,7 @@
 				uni.showLoading();
 				userService.putPayStatus(parms).then(res=>{
 					uni.hideLoading();
-					this.payStatus="success"
-					this.icon = "checkmarkempty";
+					this.toResult(true);
 					
 				}).catch(err=>{
 					uni.hideLoading();
@@ -292,6 +288,7 @@
 						{
 							this.payStatus="success"
 							this.icon = "checkmarkempty";
+							this.title="付款成功";
 						}
 						
 					}).catch(err=>{

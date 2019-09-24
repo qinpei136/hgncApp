@@ -149,11 +149,11 @@
 		data() {
 			return {
 				// 我的积分
-				jfValue: 0,
+				myScore: 0,
 				// 今日释放积分
 				releasedToday: 0,
 				// M币钱包
-				mbValue: 0,
+				myMbScore: 0,
 				showPicker: false,
 				// 开始时间
 				startDate: '2019-01-01',
@@ -228,7 +228,6 @@
 					uni.hideLoading();
 					let data=res.data.result
 					this.myScore=data.comPoint
-					this.myMbScore=data.gold
 					this.releasedToday = data.todayGold
 				}).catch(err=>{
 					uni.hideLoading();
@@ -284,14 +283,14 @@
 						{
 							data[i].addcomPoint=data[i].addgold
 							data[i].comPoint=data[i].gold
-							data[i].createTime=new Date(data[i].createTime).toLocaleDateString()
+							data[i].createTime=data[i].createTime.substring(0,10)
 							this.dataList.push(data[i])
 						}
 					}
 					else{
 						for(var i in data)
 						{
-							data[i].createTime=new Date(data[i].createTime).toLocaleDateString()
+							data[i].createTime=data[i].createTime.substring(0,10)
 							this.dataList.push(data[i])
 						}
 					}

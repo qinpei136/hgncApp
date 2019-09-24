@@ -43,7 +43,7 @@
 						</view>
 					</view>
 				</view>
-				<view class="btn" style="text-align: right;line-height:1;padding:30upx;margin-top:14upx;box-sizing: border-box;" @tap="toGoodsDetail(item.goodsId)">
+				<view class="btn" style="text-align: right;line-height:1;padding:30upx;margin-top:14upx;box-sizing: border-box;" @tap="toGoodsDetail(item)">
 					<!-- <button v-if='item.status==0' type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">再来一单</button> -->
 					<button v-if='item.ststus==1' type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">去核销</button>
 					<button v-if='item.ststus==0' type="primary" size="mini" style="border:1upx solid #c6c6c6;color:#242424;background-color:#fff;border-radius:0;font-weight:bold;">去付款</button>
@@ -60,6 +60,7 @@
 	import _ from "lodash";
 	import userService from '../../common/userService.js';
 	import util from "../../common/util.js";
+	import { mapMutations } from 'vuex';
 	export default {
 		components: {
 			uniIcon		
@@ -91,6 +92,7 @@
 			this.getOrderList();
 		},
 		methods: {
+			...mapMutations(['INIT_ORDER_lIST']),
 			initData(id){
 				userService.getGoodsDetail().then();
 			},
@@ -111,7 +113,7 @@
 							// 拼接图片链接
 							_.forEach(data, item => {
 								item.goodsImg = util.getImageUrl(item.goodsImg)
-								item.orderTime=new Date(item.orderTime).Format("yyyy-MM-dd hh:mm")
+								// item.orderTime=new Date(item.orderTime).Format("yyyy-MM-dd hh:mm")
 								// this.orderList.push(item)
 							})
 							this.orderList = this.orderList.concat(data);
@@ -148,10 +150,30 @@
 				})
 			},
 			// 商品详情
-			toGoodsDetail(id){
-				uni.navigateTo({
-					url: `/pages/nearby/goods_detail?id=${id}`
-				})
+			toGoodsDetail(item){
+				if(item.ststus=='0')
+				{
+					// 同步vuex
+					let data = {
+						goodsId: item.goodsId,
+						title: item.title,
+						imageUrl: item.goodsImg,
+						num: item.num,
+						price: item.price
+					}
+					// 缓存订单数据
+					this.INIT_ORDER_lIST([data]);
+					// 跳转到支付页面
+					uni.navigateTo({
+						url: `/pages/nearby/order_pay?orderId=${item.shopOrderId}`
+					})
+				}
+				else
+				{
+					uni.navigateTo({
+						url: `/pages/nearby/order_result?payStatus=success&orderId=${item.shopOrderId}`
+					})
+				}
 			},
 			// 转化status
 			switchStatus(index){
