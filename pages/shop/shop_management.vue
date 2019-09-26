@@ -170,7 +170,7 @@
 			} 
 		}
 		},
-		onLoad(e) {
+		onShow(e) {
 			this.init()
 		},
     }
