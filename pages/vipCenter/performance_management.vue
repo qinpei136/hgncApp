@@ -169,8 +169,8 @@
 					{
 						var result=res.data.result
 						this.teamSize = result.usercount;
-						this.totalTurnover = result.todayprice;
-						this.todayTurnover = result.price;
+						this.totalTurnover = result.price;
+						this.todayTurnover = result.todayprice;
 						this.todayInvit = result.todayuser;
 						
 						// 默认搜索
