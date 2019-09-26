@@ -680,12 +680,22 @@ const cancelOrder = function(params) {
 }
 
 /**     
-  * @method 取消订单
+  * @method 核销订单
   * @param {String}  orderId  订单Id
   * @return {promise} 返回一个promise对象     
   **/
 const writeOffOrders = function(params) {
 	return vm.$http.put('/api/TShopOrders/PutTShopOrderDestroyStaet/'+ params.orderId)
+}
+
+/**     
+  * @method 验证二级密码
+  * @param {String} pwd  二级密码
+  * @return {promise} 返回一个promise对象     
+  **/
+const vsecondaryPwd = function(params) {
+	let url = vm.$store.state.userId + "?pwd=" + params.pwd 
+	return vm.$http.get('/api/TUsers/VsecondaryPwd/'+ url )
 }
 
 const LOGIN_MODULE = {
@@ -775,6 +785,7 @@ const MINE_MODULE = {
 	addAddress,
 	deleteAddress,
 	getOrderList,
+	vsecondaryPwd,
 	// deleteOrder,
 	// receivedOrder,
 	getOrderDetail,

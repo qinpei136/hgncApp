@@ -104,6 +104,13 @@
 				去付款
 			</view>
 		</view>
+		
+		<!-- 模态框 检验二级密码-->
+		<neil-modal :show="showModal" @close="closeModal()" @confirm="confirmPwd" title="二级密码验证"> 
+			<view class="input-wrap">	
+				<input type="number" maxlength="6" v-model="pwd" placeholder="请输入二级密码" class="nick-name" />
+			</view>
+		</neil-modal>
 	</view>
 	
 </template>
@@ -115,9 +122,11 @@
 	// 引入二维码生成器
 	import QR from "../../common/utils/wxqrcode.js" // 二维码生成器  
 	import userService from '../../common/userService.js';
+	import neilModal from '../../components/neil-modal/neil-modal.vue';
 	export default {
 		components: {
-			uniIcon
+			uniIcon,
+			neilModal
 		},
 		data(){
 			return {
@@ -137,7 +146,9 @@
 				total:0,
 				// 二维码图片
 				img: "",
-				expireTime:""
+				expireTime:"",
+				showModal: false,
+				pwd: '',
 			}
 		},
 		computed: {
@@ -216,24 +227,11 @@
 			},
 			// 支付
 			toPay(){
-				// 支付流程
-				if(this.payType === "1") {
-					// 支付宝支付
-					uni.showToast({
-						title: "支付宝支付"
-					})
-					this.alipay();			
-			
-				} else {
-					// 支付宝支付
-					uni.showToast({
-						title: "Mb支付"
-					})
-					this.mbPay();
-				}
+				this.pwd=""
+				this.showModal = true;
 			},
 			// 支付宝支付
-			alipay(data){
+			alipay(){
 				let _this=this;
 				uni.showLoading()
 				let params = {"addressId": "0","orderType":"2"}
@@ -299,13 +297,56 @@
 						})
 					})
 			},
+			// 关闭modal
+			closeModal(){
+				this.showModal = false;
+			},
+			// 修改昵称
+			confirmPwd(){
+				uni.showLoading()
+				let params = {pwd: this.pwd}
+				let _this=this
+				userService.vsecondaryPwd(params).then(res => {
+					uni.hideLoading();
+					if(res.data.code=="200")
+					{
+						// 支付流程
+						if(_this.payType === "1") {
+							// 支付宝支付
+							uni.showToast({
+								title: "支付宝支付"
+							})
+							// this.callbackAfterPay()
+							_this.alipay();
+						} else {
+							// 支付宝支付
+							uni.showToast({
+								title: "Mb支付宝支付"
+							})
+							_this.mbPay();
+						}
+					}
+					else
+					{
+						uni.showToast({
+							icon: "none",
+							title: res.data.msg
+						})
+					}
+				}).catch(err => {
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.errMsg
+					})
+				})
+			}
 		},
 		onLoad(option) {
 			this.payStatus = option.payStatus;
 			this.title = this.payStatus === "success" ? "付款成功" : "付款失败";
 			this.icon = this.payStatus === "success" ? "checkmarkempty" : "closeempty";
 			this.orderId=option.orderId
-			
 			this.init();
 			// 付款成功
 			if(this.payStatus === "success"){

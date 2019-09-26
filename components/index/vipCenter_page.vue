@@ -135,6 +135,13 @@
 			<text>客服电话：</text>
 			<text>{{customerTelephone}}</text>
 		</view>
+		
+		<!-- 模态框 检验二级密码-->
+		<neil-modal :show="showModal" @close="closeModal()" @confirm="confirmPwd" title="二级密码验证">
+			<view class="input-wrap">	
+				<input type="number" maxlength="6" v-model="pwd" placeholder="请输入二级密码" class="nick-name" />
+			</view>
+		</neil-modal>
 	</view>
 </template>
 
@@ -150,10 +157,12 @@
 	import util from "../../common/util.js";
 	import userService from "../../common/userService.js";
 	import myList from "../../components/common/my-list";
+	import neilModal from '../../components/neil-modal/neil-modal.vue';
 	export default {
 		components: {
 			uniIcon,
-			myList
+			myList,
+			neilModal
 		},
 		data() {
 			return {
@@ -190,7 +199,11 @@
 						isShowExtra: true,
 						isShowArrow: true,
 					}
-				]
+				],
+				showModal: false,
+				pwd: '',
+				//积分还是mb
+				url:""
 			};
 		},
 		computed: {
@@ -288,7 +301,6 @@
 			},
 			// 积分中心
 			toIntegralCenter(index) {
-				// 根据index的不同展示不同的tab
 				uni.navigateTo({
 					url: '../../vipCenter/intergral_center'
 				})
@@ -301,9 +313,9 @@
 			},
 			// 资金管理
 			toFundManagement() {
-				uni.navigateTo({
-					url: '../../vipCenter/mb_transfer'
-				})
+				this.pwd=""
+				this.showModal = true;
+				this.url='../../vipCenter/mb_transfer'
 			},
 			// 销售管理
 			toSalesManagement() {
@@ -325,14 +337,11 @@
 					uni.showToast({
 						title: '分享去邀请会员'
 					})
-					// uni.navigateTo({
-					// 	url: "/pages/mine/change_telphone"
-					// })
 					// 积分转让
 				} else if (data.index === 1) {
-					uni.navigateTo({
-						url: "/pages/vipCenter/intergral_transfer"
-					})
+					this.pwd=""
+					this.showModal = true;
+					this.url='/pages/vipCenter/intergral_transfer'
 					// 实体加盟（我要开店）
 				} else if (data.index === 2) {
 					// 未认证，跳转认证页面;已认证，跳转店铺管理
@@ -342,6 +351,38 @@
 					})
 
 				}
+			},
+			// 关闭modal
+			closeModal(){
+				this.showModal = false;
+			},
+			// 修改昵称
+			confirmPwd(){
+				uni.showLoading()
+				let params = {pwd: this.pwd}
+				let _this=this
+				userService.vsecondaryPwd(params).then(res => {
+					uni.hideLoading();
+					if(res.data.code=="200")
+					{
+						uni.navigateTo({
+							url: _this.url
+						})
+					}
+					else
+					{
+						uni.showToast({
+							icon: "none",
+							title: res.data.msg
+						})
+					}
+				}).catch(err => {
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.errMsg
+					})
+				})
 			}
 		},
 		created() {

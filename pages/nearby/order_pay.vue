@@ -101,15 +101,23 @@
 			</view>
 		</view>
 		
+		<!-- 模态框 检验二级密码-->
+		<neil-modal :show="showModal" @close="closeModal()" @confirm="confirmPwd" title="二级密码验证">
+			<view class="input-wrap">	
+				<input type="number" maxlength="6" v-model="pwd" placeholder="请输入二级密码" class="nick-name" />
+			</view>
+		</neil-modal>
 	</view>
 </template>
 <script>
 	import { uniIcon } from '@dcloudio/uni-ui';
 	import { mapState, mapMutations, mapGetters} from 'vuex';
 	import userService from '../../common/userService.js';
+	import neilModal from '../../components/neil-modal/neil-modal.vue';
 	export default {
 		components: {
 			uniIcon,
+			neilModal,
 		},
 		data(){
 			return {
@@ -120,6 +128,8 @@
 				payType: "1",
 				// m币余额
 				mBalance: 0,
+				showModal: false,
+				pwd: '',
 			}
 		},
 		computed: {
@@ -170,24 +180,11 @@
 			},
 			// 支付
 			toPay(data){
-				// 支付流程
-				if(this.payType === "1") {
-					// 支付宝支付
-					uni.showToast({
-						title: "支付宝支付"
-					})
-					// this.callbackAfterPay()
-					this.alipay(data);
-				} else {
-					// 支付宝支付
-					uni.showToast({
-						title: "Mb支付宝支付"
-					})
-					this.mbPay(data);
-				}
+				this.pwd=""
+				this.showModal = true;
 			},
 			// 支付宝支付
-			alipay(data){
+			alipay(){
 				let _this=this;
 				uni.showLoading()
 				let params = {"addressId": "0","orderType":"2"}
@@ -267,6 +264,50 @@
 						});
 					}
 				});
+			},
+			// 关闭modal
+			closeModal(){
+				this.showModal = false;
+			},
+			// 修改昵称
+			confirmPwd(){
+				uni.showLoading()
+				let params = {pwd: this.pwd}
+				let _this=this
+				userService.vsecondaryPwd(params).then(res => {
+					uni.hideLoading();
+					if(res.data.code=="200")
+					{
+						// 支付流程
+						if(_this.payType === "1") {
+							// 支付宝支付
+							uni.showToast({
+								title: "支付宝支付"
+							})
+							// this.callbackAfterPay()
+							_this.alipay();
+						} else {
+							// 支付宝支付
+							uni.showToast({
+								title: "Mb支付宝支付"
+							})
+							_this.mbPay();
+						}
+					}
+					else
+					{
+						uni.showToast({
+							icon: "none",
+							title: res.data.msg
+						})
+					}
+				}).catch(err => {
+					uni.hideLoading();
+					uni.showToast({
+						icon: "none",
+						title: err.errMsg
+					})
+				})
 			}
 		},
 		onLoad(e) {
