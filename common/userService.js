@@ -654,6 +654,40 @@ const getShopOrderByUserId = function(params) {
 	return vm.$http.get('/api/TShopOrders/GetTShopOrder_userid/'+ url )
 }
 
+/**     
+  * @method 通过店铺ID查找商品
+  * @param {String} shopId  店铺Id
+  * @param {int} pageSize  一页显示多少条
+  * @param {int} pageIndex  第几页  
+  * @param {boolean} status  状态 a全部订单 0待付款 1已付款待核销 c已关闭 d已完成
+  * @return {promise} 返回一个promise对象     
+  **/
+const getShopOrderByShopId = function(params) {
+	let url = params.shopId +
+		"?pageIndex=" + params.page +
+		"&pageSize=" + params.pageSize +
+		"&status=" + params.status
+	return vm.$http.get('/api/TShopOrders/GetTShopOrder_ShopID/'+ url)
+}
+
+/**     
+  * @method 取消订单
+  * @param {String}  orderId  订单Id
+  * @return {promise} 返回一个promise对象     
+  **/
+const cancelOrder = function(params) {
+	return vm.$http.put('/api/TShopOrders/CancelTShopOrder/'+ params.orderId)
+}
+
+/**     
+  * @method 取消订单
+  * @param {String}  orderId  订单Id
+  * @return {promise} 返回一个promise对象     
+  **/
+const writeOffOrders = function(params) {
+	return vm.$http.put('/api/TShopOrders/PutTShopOrderDestroyStaet/'+ params.orderId)
+}
+
 const LOGIN_MODULE = {
 	getSms,
 	register,
@@ -710,6 +744,9 @@ const VIPCENTER_MODULE = {
 const SHOP_MODULE = {
 	getShopByUserId,
 	editShop,
+	getShopOrderByShopId,
+	cancelOrder,
+	writeOffOrders
 }
 
 const GOODS_MODULE = {

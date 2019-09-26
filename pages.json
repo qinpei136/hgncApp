@@ -387,6 +387,22 @@
 				"navigationBarTitleText": "客服电话",
 				"navigationStyle":"custom"
 			}
+		},{
+			"path": "order_list",
+			"style": {
+				"navigationBarTitleText": "订单管理"
+			}
+		},
+		{
+			"path": "order_detail",
+			"style": {
+				"navigationBarTitleText": "订单详情"
+			}
+		},{
+			"path": "order_cancellation",
+			"style": {
+				"navigationBarTitleText": "订单核销"
+			}
 		}]
 	}, {
 		// 商品管理

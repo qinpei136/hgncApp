@@ -118,12 +118,12 @@
 					// 订单管理
 				} else if (data.index === 2) {
 					uni.navigateTo({
-						url: "/pages/shop/intergral_transfer"
+						url: "/pages/shop/order_list"
 					})
 					// 订单核销
 				}else if (data.index === 3) {
 					uni.navigateTo({
-						url: "/pages/shop/intergral_transfer"
+						url: "/pages/shop/order_cancellation"
 					})
 				}
 			},
