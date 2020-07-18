@@ -19,7 +19,7 @@
   "homepage": "https://github.com/hgnc-team/hgncApp#readme",
   "dependencies": {
     "@dcloudio/uni-ui": "0.0.4",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "moment": "^2.24.0",
     "mpvue-picker": "^2.0.5"
   }
